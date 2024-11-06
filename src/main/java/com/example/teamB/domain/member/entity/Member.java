@@ -1,6 +1,6 @@
 package com.example.teamB.domain.member.entity;
 
-import com.example.teamB.domain.enums.Gender;
+import com.example.teamB.domain.member.enums.Gender;
 import com.example.teamB.global.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
