@@ -1,6 +1,8 @@
 package com.example.teamB.domain.member.entity;
 
 import com.example.teamB.domain.member.enums.Gender;
+import com.example.teamB.domain.member.enums.MemberStatus;
+import com.example.teamB.domain.region.entity.Region;
 import com.example.teamB.global.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -20,6 +22,10 @@ public class Member extends BaseEntity {
     @Column(name = "id")
     public Long id;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "region_id", nullable = false)
+    public Region region;
+
     @Column(nullable = false, length = 50)
     public String email;
 
@@ -31,13 +37,15 @@ public class Member extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(columnDefinition = "VARCHAR(10)")
-    public Gender Gender;
+    public Gender gender;
 
-    public Boolean alarmAgree;
+    @Column(name = "alarm_status")
+    public Boolean alarmStatus;
 
     @Enumerated(EnumType.STRING)
     @Column(columnDefinition = "VARCHAR(15)")
-    public String status;
+    public MemberStatus status;
 
+    @Column(name = "inactive_date")
     public LocalDateTime inactiveDate;
 }
