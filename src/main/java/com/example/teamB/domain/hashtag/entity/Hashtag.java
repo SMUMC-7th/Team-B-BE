@@ -23,8 +23,11 @@ public class Hashtag extends BaseEntity {
     private Long id;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "category", length = 15, columnDefinition = "VARCHAR(15)")
+    @Column(name = "category", columnDefinition = "VARCHAR(15)")
     private HashtagCategory category;
+
+    @Column(name = "image", columnDefinition = "TEXT")
+    private String image;
 
     @OneToMany(mappedBy = "hashtag", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OotdHashtag> ootdHashtags;

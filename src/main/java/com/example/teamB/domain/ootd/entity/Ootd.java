@@ -31,8 +31,7 @@ public class Ootd extends BaseEntity {
     @JoinColumn(name = "weather_id", nullable = false)
     private Weather weather;
 
-    @Lob //이미지라고 해서 용량이 클 수도 있다고 생각해 @Lob을 사용
-    @Column(name = "image", nullable = false)
+    @Column(name = "image", columnDefinition = "TEXT", nullable = false)
     private String image;
 
     @OneToMany(mappedBy = "ootd", cascade = CascadeType.ALL, orphanRemoval = true)

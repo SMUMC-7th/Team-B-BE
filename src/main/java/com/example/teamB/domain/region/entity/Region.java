@@ -25,7 +25,7 @@ public class Region extends BaseEntity {
     private Long id;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "name", length = 15, nullable = false)
+    @Column(name = "name", columnDefinition = "VARCHAR(15)", nullable = false)
     private RegionName name;
 
     @OneToMany(mappedBy = "region", cascade = CascadeType.ALL, orphanRemoval = true)
