@@ -1,10 +1,10 @@
 package com.example.teamB.domain.ootd.entity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.example.teamB.domain.member.entity.Member;
 import com.example.teamB.domain.ootdHashtag.entity.OotdHashtag;
-import com.example.teamB.domain.weather.entity.Weather;
 import com.example.teamB.global.common.BaseEntity;
 
 import jakarta.persistence.*;
@@ -27,13 +27,19 @@ public class Ootd extends BaseEntity {
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "weather_id", nullable = false)
-    private Weather weather;
 
     @Column(name = "image", columnDefinition = "TEXT", nullable = false)
     private String image;
 
+    @Column(name = "min_temperature")
+    private Integer minTemperature;
+
+    @Column(name = "max_temperature")
+    private Integer maxTemperature;
+
+    @Column(name = "weather_discription", length = 100)
+    private String weatherDiscription;
+
     @OneToMany(mappedBy = "ootd", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<OotdHashtag> ootdHashtags;
+    private List<OotdHashtag> ootdHashtags =  new ArrayList<>();
 }
