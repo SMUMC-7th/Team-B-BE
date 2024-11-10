@@ -1,4 +1,4 @@
-package com.example.teamB.global.upload.error;
+package com.example.teamB.global.upload.exception;
 
 import com.example.teamB.global.apiPayload.CustomResponse;
 import com.example.teamB.global.apiPayload.code.BaseErrorCode;

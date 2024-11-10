@@ -1,7 +1,7 @@
 package com.example.teamB.global.upload.handler;
 
-import com.example.teamB.global.upload.error.UploadErrorCode;
-import com.example.teamB.global.upload.error.UploadException;
+import com.example.teamB.global.upload.exception.UploadErrorCode;
+import com.example.teamB.global.upload.exception.UploadException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -14,6 +14,7 @@ import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.model.S3Exception;
 
 import java.io.IOException;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -26,26 +27,46 @@ public class S3UploadHandler implements UploadHandler {
     private String bucketName;
 
     @Override
-    public void upload(MultipartFile file, String storeImageName) {
+    public String upload(MultipartFile file) {
+        String storeFileName = createStoreFileName(file.getOriginalFilename());
+
         try {
-            s3Client.putObject(PutObjectRequest.builder()
-                            .bucket(bucketName)
-                            .key(storeImageName)
-                            .contentType(file.getContentType())
-                            .build(),
-                    RequestBody.fromInputStream(file.getInputStream(), file.getSize())
-            );
+            uploadFile(file, storeFileName);
         }
         catch (S3Exception | IOException e) {
             throw new UploadException(UploadErrorCode.UPLOAD_FAILED);
         }
+
+        return getFullStoredUrl(storeFileName);
     }
 
-    @Override
-    public String getUrl(String fileName) {
+
+    private String createStoreFileName(String originalFilename) {
+        String ext = extractExt(originalFilename);
+        String uuid = UUID.randomUUID().toString();
+        return uuid + "." + ext;
+    }
+
+    // 확장자 추출 메서드
+    private String extractExt(String originalFilename) {
+        int pos = originalFilename.lastIndexOf(".");
+        return originalFilename.substring(pos + 1);
+    }
+
+    private void uploadFile(MultipartFile file, String storeFileName) throws IOException {
+        s3Client.putObject(PutObjectRequest.builder()
+                        .bucket(bucketName)
+                        .key(storeFileName)
+                        .contentType(file.getContentType())
+                        .build(),
+                RequestBody.fromInputStream(file.getInputStream(), file.getSize())
+        );
+    }
+
+    private String getFullStoredUrl(String storeFileName) {
         return s3Client.utilities().getUrl(GetUrlRequest.builder()
                         .bucket(bucketName)
-                        .key(fileName)
+                        .key(storeFileName)
                         .build())
                 .toString();
     }
