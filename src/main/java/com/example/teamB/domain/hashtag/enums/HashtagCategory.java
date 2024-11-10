@@ -1,5 +1,32 @@
 package com.example.teamB.domain.hashtag.enums;
 
+import lombok.Getter;
+
+@Getter
 public enum HashtagCategory {
-        패딩, 코트, 자켓, 플리스, 니트, 가디건, 후드, 바람막이, 맨투맨, 셔츠, 긴팔티, 반팔티, 롱팬츠, 숏팬츠, 머플러, 비니, 나시, 샌들, 선글라스
+    PADDED_COAT("패딩"),
+    COAT("코트"),
+    JACKET("자켓"),
+    FLEECE("플리스"),
+    KNIT("니트"),
+    CARDIGAN("가디건"),
+    HOODIE("후드"),
+    WIND_BREAKER("바람막이"),
+    SWEATSHIRT("맨투맨"),
+    SHIRT("셔츠"),
+    LONG_SLEEVE_TEE("긴팔티"),
+    SHORT_SLEEVE_TEE("반팔티"),
+    LONG_PANTS("롱팬츠"),
+    SHORT_PANTS("숏팬츠"),
+    SCARF("머플러"),
+    BEANIE("비니"),
+    SLEEVELESS("나시"),
+    SANDALS("샌들"),
+    SUNGLASSES("선글라스");
+
+    private final String koreanName;
+
+    HashtagCategory(String koreanName) {
+            this.koreanName = koreanName;
     }
+}
