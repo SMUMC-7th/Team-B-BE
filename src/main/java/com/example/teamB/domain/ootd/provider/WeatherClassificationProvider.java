@@ -26,15 +26,15 @@ public enum WeatherClassificationProvider {
             "외투와 적절한 레이어링이 필요한 쌀쌀한 날"),
 
     COOL(5, 9,
-            Arrays.asList(COAT, FLEECE, HOODIE),
+            Arrays.asList(COAT, FLEECE, HOODIE, JACKET, SWEATSHIRT, KNIT),
             "적당한 두께의 외투가 필요한 날"),
 
     MILD(10, 14,
-            Arrays.asList(CARDIGAN, SHIRT, LONG_SLEEVE_TEE),
+            Arrays.asList(CARDIGAN, SHIRT, LONG_SLEEVE_TEE, JACKET, WIND_BREAKER),
             "얇게 입기는 추운 날"),
 
     PLEASANT(15, 19,
-            Arrays.asList(SHIRT, SHORT_SLEEVE_TEE, SWEATSHIRT),
+            Arrays.asList(SHIRT, SHORT_SLEEVE_TEE, SWEATSHIRT, KNIT),
             "기온이 딱 적당하여 산책하기 좋은 날"),
 
     WARM(20, 24,
