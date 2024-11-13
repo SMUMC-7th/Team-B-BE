@@ -23,7 +23,7 @@ public class Hashtag extends BaseEntity {
     private Long id;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "category", columnDefinition = "VARCHAR(15)")
+    @Column(name = "category", columnDefinition = "VARCHAR(20)")
     private HashtagCategory category;
 
     @Column(name = "image", columnDefinition = "TEXT")

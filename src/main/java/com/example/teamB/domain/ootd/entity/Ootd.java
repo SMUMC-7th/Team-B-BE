@@ -27,7 +27,6 @@ public class Ootd extends BaseEntity {
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
-
     @Column(name = "image", columnDefinition = "TEXT", nullable = false)
     private String image;
 
@@ -37,9 +36,9 @@ public class Ootd extends BaseEntity {
     @Column(name = "max_temperature")
     private Integer maxTemperature;
 
-    @Column(name = "weather_discription", length = 100)
-    private String weatherDiscription;
+    @Column(name = "weather_description", length = 100)
+    private String weatherDescription;
 
     @OneToMany(mappedBy = "ootd", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<OotdHashtag> ootdHashtags =  new ArrayList<>();
+    private List<OotdHashtag> ootdHashtags = new ArrayList<>();
 }
