@@ -27,12 +27,14 @@ public class Member extends BaseEntity {
     @Column(name = "id")
     public Long id;
 
-
     @Column(nullable = false, length = 50)
     public String email;
 
-    @Column(nullable = false, length = 50)
+    @Column(nullable = false, length = 100)
     public String password;
+
+    @Column(nullable = false, length = 20)
+    public String name;
 
     @Column(nullable = false, length = 20)
     public String nickname;

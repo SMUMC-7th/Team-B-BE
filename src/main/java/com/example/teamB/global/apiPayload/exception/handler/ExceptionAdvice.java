@@ -24,7 +24,7 @@ public class ExceptionAdvice {
         log.error(Arrays.toString(e.getStackTrace()));
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
-                CustomResponse.onFailure(code.getStatus(), code.getCode(), code.getMessage(), false,null)
+                CustomResponse.onFailure(code.getStatus(), code.getCode(), code.getMessage(), false, null)
         );
 //        return ResponseEntity.badRequest().body(code.getResponse());
     }
@@ -36,7 +36,8 @@ public class ExceptionAdvice {
         log.error(Arrays.toString(e.getStackTrace()));
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
-                CustomResponse.onFailure(code.getStatus(), code.getCode(), code.getMessage(), false,null)
+                CustomResponse.onFailure(code.getStatus(), code.getCode(), code.getMessage(), false, null)
         );
     }
+
 }
