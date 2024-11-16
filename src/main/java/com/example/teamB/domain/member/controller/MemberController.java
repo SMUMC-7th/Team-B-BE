@@ -26,40 +26,34 @@ public class MemberController {
 
     private final MemberCommandService memberCommandService;
 
-    /** 1단계: 회원가입 요청 (이메일, 비밀번호 입력) */
-    @PostMapping("/signup/request")
-    public CustomResponse<Void> signupRequest(@RequestBody MemberRequestDTO.SignupRequestDTO dto) throws MessagingException {
-        memberCommandService.signupRequest(dto);
+    /** 1단계: 회원가입 요청 DTO
+     * 이메일, 비밀번호 입력
+     * 이메일 중복 확인 및 인증 메일 전송*/
+    @PostMapping("/signup/request-and-verify")
+    public CustomResponse<Void> signupRequestAndVerifyEmail(@RequestBody @Valid MemberRequestDTO.SignupRequestAndVerifyEmailDTO dto) throws MessagingException {
+        memberCommandService.signupRequestAndVerifyEmail(dto);
         return CustomResponse.onSuccess(null);
     }
 
-    /** 2단계: 이메일 중복 확인 및 인증 메일 전송 */
-    @PostMapping("/signup/verify-email")
-    public CustomResponse<Void> sendVerificationEmail(@RequestBody MemberRequestDTO.EmailVerificationRequestDTO dto) throws MessagingException {
-        memberCommandService.sendVerificationEmail(dto);
-        return CustomResponse.onSuccess(null);
-    }
-
-    /** 3단계: 인증 코드 검증 */
+    /** 2단계: 인증 코드 검증 */
     @PostMapping("/signup/verify-code")
     public CustomResponse<Void> verifyCode(@RequestBody @Valid MemberRequestDTO.VerificationCodeDTO dto) {
         memberCommandService.verifyCode(dto.getEmail(), dto.getVerificationCode());
         return CustomResponse.onSuccess(null);
     }
 
-    /** 4단계: 추가 정보 입력 (이름, 닉네임, 젠더 입력) */
+    /** 3단계: 추가 정보 입력 (이름, 닉네임, 젠더 입력) */
     @PostMapping("/signup/additional-info")
     public CustomResponse<Void> addAdditionalInfo(@RequestBody @Valid MemberRequestDTO.AdditionalInfoDTO dto) {
         memberCommandService.addAdditionalInfo(dto);
         return CustomResponse.onSuccess(null);
     }
 
-    /** 5단계: 회원가입 완료 */
+    /** 4단계: 회원가입 완료 */
     @PostMapping("/signup/complete")
     public CustomResponse<MemberResponseDTO.MemberTokenDTO> completeSignup(@RequestBody @Valid MemberRequestDTO.SignupCompleteDTO dto) {
         return CustomResponse.onSuccess(memberCommandService.completeSignup(dto));
     }
-
     /** 회원 로그인 API */
     @PostMapping("/login")
     public CustomResponse<MemberResponseDTO.MemberTokenDTO> login(@RequestBody MemberRequestDTO.MemberLoginDTO dto) {

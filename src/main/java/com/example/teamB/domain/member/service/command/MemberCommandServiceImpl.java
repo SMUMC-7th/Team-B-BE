@@ -31,39 +31,35 @@ public class MemberCommandServiceImpl implements MemberCommandService {
     private final Map<String, MemberRequestDTO.AdditionalInfoDTO> additionalInfoMap = new ConcurrentHashMap<>();
     private final Map<String, String> passwordsMap = new ConcurrentHashMap<>();
 
-    /** 1단계: 회원가입 요청 */
+    /** 1단계: 회원가입 요청 및 이메일 인증 */
     @Override
-    public void signupRequest(MemberRequestDTO.SignupRequestDTO dto) {
-        log.info("Signup request for email: {}", dto.getEmail());
-
+    public void signupRequestAndVerifyEmail(MemberRequestDTO.SignupRequestAndVerifyEmailDTO dto) throws MessagingException {
         if (memberRepository.existsByEmail(dto.getEmail())) {
             throw new MemberException(MemberErrorCode.ALREADY_EXIST);
         }
 
+        // 비밀번호 암호화 및 저장
         String encodedPassword = encoder.encode(dto.getPassword());
-        log.info("Encoded password: {}", encodedPassword);
-
         passwordsMap.put(dto.getEmail(), encodedPassword);
-        log.info("Password stored in passwordsMap for email: {}", dto.getEmail());
-    }
 
-    /** 2단계: 이메일 인증 코드 전송 */
-    @Override
-    public void sendVerificationEmail(MemberRequestDTO.EmailVerificationRequestDTO dto) throws MessagingException {
+        // 인증 코드 생성 및 이메일 전송
         String verificationCode = emailCommandService.sendVerificationEmail(dto.getEmail());
         verificationCodes.put(dto.getEmail(), verificationCode);
+
+        log.info("Signup request and email verification initiated for: {}", dto.getEmail());
     }
 
-    /** 3단계: 인증 코드 검증 */
+    /** 2단계: 인증 코드 검증 */
     @Override
     public void verifyCode(String email, String verificationCode) {
         String storedCode = verificationCodes.get(email);
         if (storedCode == null || !storedCode.equals(verificationCode)) {
             throw new MemberException(MemberErrorCode.INVALID_VERIFICATION_CODE);
         }
+        log.info("Verification code successfully validated for email: {}", email);
     }
 
-    /** 4단계: 추가 정보 입력 */
+    /** 3단계: 추가 정보 입력 */
     @Override
     public void addAdditionalInfo(MemberRequestDTO.AdditionalInfoDTO dto) {
         log.info("Storing additional info: {}", dto);
@@ -75,7 +71,7 @@ public class MemberCommandServiceImpl implements MemberCommandService {
         log.info("Current additionalInfoMap: {}", additionalInfoMap);
     }
 
-    /** 5단계: 회원가입 완료 */
+    /** 4단계: 회원가입 완료 */
     @Override
     public MemberResponseDTO.MemberTokenDTO completeSignup(MemberRequestDTO.SignupCompleteDTO dto) {
         log.info("Completing signup for email: {}", dto.getEmail());
@@ -131,7 +127,7 @@ public class MemberCommandServiceImpl implements MemberCommandService {
                 .build();
     }
 
-    /** 로그인 처리 */
+    /** 로그인 */
     @Override
     public MemberResponseDTO.MemberTokenDTO login(MemberRequestDTO.MemberLoginDTO dto) {
         Member member = memberRepository.findByEmail(dto.getEmail())
