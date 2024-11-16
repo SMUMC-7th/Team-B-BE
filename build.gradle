@@ -47,8 +47,27 @@ dependencies {
 
 	// mail
 	implementation 'org.springframework.boot:spring-boot-starter-mail'
+
+	// s3
+	implementation platform('software.amazon.awssdk:bom:2.29.2')
+	implementation 'software.amazon.awssdk:s3'
+
 }
 
 tasks.named('test') {
 	useJUnitPlatform()
 }
+
+clean {
+	delete fileTree(dir: 'src/main/generated', include: '**/*.java')
+}
+tasks.withType(JavaCompile) {
+	options.compilerArgs += [
+			'--add-opens',
+			'java.base/java.lang=ALL-UNNAMED',
+			'--add-opens',
+			'java.base/java.util=ALL-UNNAMED'
+	]
+}
+
+
