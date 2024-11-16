@@ -1,6 +1,9 @@
 package com.example.teamB.domain.ootd.provider;
 
 import com.example.teamB.domain.hashtag.enums.HashtagCategory;
+import com.example.teamB.domain.ootd.exception.OotdErrorCode;
+import com.example.teamB.domain.ootd.exception.OotdException;
+import lombok.Getter;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -49,7 +52,9 @@ public enum WeatherClassificationProvider {
             Arrays.asList(SLEEVELESS, SHORT_SLEEVE_TEE, SHORT_PANTS, SUNGLASSES, SANDALS),
             "기온이 매우 높은 무더운 날");
 
+    @Getter
     private final int minTemperature;
+    @Getter
     private final int maxTemperature;
     private final List<HashtagCategory> hashtags;
     private final String description;
@@ -61,7 +66,7 @@ public enum WeatherClassificationProvider {
         this.description = description;
     }
 
-    public boolean supports(int temperature) {
+    private boolean supports(int temperature) {
         return temperature >= minTemperature && temperature <= maxTemperature;
     }
 
@@ -72,5 +77,18 @@ public enum WeatherClassificationProvider {
 
     public String getWeatherDescription() {
         return description;
+    }
+
+    /**
+     * 조건에 맞는 날씨 분류 Enum을 찾아 반환하는 메서드
+     */
+    public static WeatherClassificationProvider getWeatherClassification(Integer minTemperature, Integer maxTemperature) {
+        int temperature = (minTemperature + maxTemperature) / 2;
+        for (WeatherClassificationProvider provider : WeatherClassificationProvider.values()) {
+            if (provider.supports(temperature)) {
+                return provider;
+            }
+        }
+        throw new OotdException(OotdErrorCode.WEATHER_SEARCH_FAILED);
     }
 }

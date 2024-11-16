@@ -12,7 +12,10 @@ public enum OotdErrorCode implements BaseErrorCode {
 
     OOTD_REGISTRATION_FAILED(HttpStatus.BAD_REQUEST,
             "OOTD001",
-            "OOTD 등록에 실패하였습니다.");
+            "OOTD 등록에 실패하였습니다."),
+    WEATHER_SEARCH_FAILED(HttpStatus.BAD_REQUEST,
+            "OOTD002",
+            "날씨 분류 검색에 실패하였습니다.");
 
     private final HttpStatus status;
     private final String code;

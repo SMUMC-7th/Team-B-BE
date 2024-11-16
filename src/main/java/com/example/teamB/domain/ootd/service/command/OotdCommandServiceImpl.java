@@ -43,7 +43,7 @@ public class OotdCommandServiceImpl implements OotdCommandService {
 
         // 날씨 분류 확인
         WeatherClassificationProvider weatherClassification
-                = getWeatherClassification(dto.getMinTemperature(), dto.getMaxTemperature());
+                = WeatherClassificationProvider.getWeatherClassification(dto.getMinTemperature(), dto.getMaxTemperature());
 
         // OOTD 저장
         Ootd ootd = Ootd.builder()
@@ -65,19 +65,6 @@ public class OotdCommandServiceImpl implements OotdCommandService {
         }
         
         ootdRepository.save(ootd);
-    }
-
-    /**
-     * 조건에 맞는 날씨 분류 Enum을 찾아 반환하는 메서드
-     */
-    private WeatherClassificationProvider getWeatherClassification(Integer minTemperature, Integer maxTemperature) {
-        int temperature = (minTemperature + maxTemperature) / 2;
-        for (WeatherClassificationProvider provider : WeatherClassificationProvider.values()) {
-            if (provider.supports(temperature)) {
-                return provider;
-            }
-        }
-        throw new OotdException(OotdErrorCode.OOTD_REGISTRATION_FAILED);
     }
 
     private Hashtag convertHashtag(String hashtagName) {
