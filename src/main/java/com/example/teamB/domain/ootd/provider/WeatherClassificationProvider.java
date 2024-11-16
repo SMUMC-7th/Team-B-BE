@@ -3,6 +3,7 @@ package com.example.teamB.domain.ootd.provider;
 import com.example.teamB.domain.hashtag.enums.HashtagCategory;
 import com.example.teamB.domain.ootd.exception.OotdErrorCode;
 import com.example.teamB.domain.ootd.exception.OotdException;
+import lombok.Getter;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -51,7 +52,9 @@ public enum WeatherClassificationProvider {
             Arrays.asList(SLEEVELESS, SHORT_SLEEVE_TEE, SHORT_PANTS, SUNGLASSES, SANDALS),
             "기온이 매우 높은 무더운 날");
 
+    @Getter
     private final int minTemperature;
+    @Getter
     private final int maxTemperature;
     private final List<HashtagCategory> hashtags;
     private final String description;

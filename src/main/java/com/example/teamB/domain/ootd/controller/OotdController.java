@@ -37,6 +37,12 @@ public class OotdController {
         return CustomResponse.onSuccess(ootdQueryService.getMonthlyOotd(year, month, 1L));
     }
 
-
+    @GetMapping("/past")
+    @Operation(summary = "과거 OOTD 기록 조회", description = "비슷한 기온에 과거에 등록한 OOTD를 조회합니다.")
+    public CustomResponse<OotdResponseDTO.OotdInfoListDTO> getPastOotd(
+            @RequestParam(value = "maxTemperature") int maxTemperature,
+            @RequestParam(value = "minTemperature") int minTemperature) {
+        return CustomResponse.onSuccess(ootdQueryService.getPastOotd(maxTemperature, minTemperature, 1L));
+    }
 
 }

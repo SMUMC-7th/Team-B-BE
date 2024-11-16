@@ -14,4 +14,10 @@ public interface OotdRepository extends JpaRepository<Ootd, Long> {
     List<Ootd> findByMemberIdAndCreatedAtBetween(@Param("memberId") Long memberId,
                                                  @Param("startOfMonth") LocalDateTime startOfMonth,
                                                  @Param("endOfMonth") LocalDateTime endOfMonth);
+
+    @Query("SELECT o FROM Ootd o WHERE o.member.id = :memberId " +
+            "AND ((o.minTemperature + o.maxTemperature) / 2) BETWEEN :minTemp AND :maxTemp")
+    List<Ootd> findByMemberIdAndTemperatureRange(@Param("memberId") Long memberId,
+                                                 @Param("minTemp") int minTemp,
+                                                 @Param("maxTemp") int maxTemp);
 }
