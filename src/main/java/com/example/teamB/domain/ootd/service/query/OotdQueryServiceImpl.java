@@ -25,7 +25,7 @@ public class OotdQueryServiceImpl implements OotdQueryService {
         LocalDateTime startOfMonth = LocalDateTime.of(year, month, 1, 0, 0);
         LocalDateTime endOfMonth = startOfMonth.withDayOfMonth(startOfMonth.toLocalDate().lengthOfMonth()).withHour(23).withMinute(59).withSecond(59);
 
-        List<Ootd> ootdList = ootdRepository.findByMemberIdAndCreatedAtBetween(1L, startOfMonth, endOfMonth);
+        List<Ootd> ootdList = ootdRepository.findByMemberIdAndCreatedAtBetween(memberId, startOfMonth, endOfMonth);
         return OotdConverter.toOotdInfoListDTO(ootdList);
     }
 
