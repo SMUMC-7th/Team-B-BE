@@ -1,5 +1,6 @@
 package com.example.teamB.domain.member.service.command;
 
+import com.example.teamB.domain.member.enums.MemberStatus;
 import com.example.teamB.domain.member.repository.MemberRepository;
 import com.example.teamB.domain.member.dto.MemberRequestDTO;
 import com.example.teamB.domain.member.dto.MemberResponseDTO;
@@ -8,11 +9,13 @@ import com.example.teamB.domain.member.exception.MemberErrorCode;
 import com.example.teamB.domain.member.exception.MemberException;
 import com.example.teamB.global.jwt.util.JwtProvider;
 import jakarta.mail.MessagingException;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -26,6 +29,7 @@ public class MemberCommandServiceImpl implements MemberCommandService {
     private final PasswordEncoder encoder;
     private final JwtProvider jwtProvider;
     private final EmailCommandService emailCommandService;
+
 
     private final Map<String, String> verificationCodes = new ConcurrentHashMap<>();
     private final Map<String, MemberRequestDTO.AdditionalInfoDTO> additionalInfoMap = new ConcurrentHashMap<>();
@@ -133,6 +137,11 @@ public class MemberCommandServiceImpl implements MemberCommandService {
         Member member = memberRepository.findByEmail(dto.getEmail())
                 .orElseThrow(() -> new MemberException(MemberErrorCode.NOT_FOUND));
 
+        // 탈퇴 상태 확인
+        if (member.getStatus() == MemberStatus.INACTIVE) {
+            throw new MemberException(MemberErrorCode.INACTIVE_ACCOUNT);
+        }
+
         if (!encoder.matches(dto.getPassword(), member.getPassword())) {
             throw new MemberException(MemberErrorCode.INCORRECT_PASSWORD);
         }
@@ -140,6 +149,103 @@ public class MemberCommandServiceImpl implements MemberCommandService {
         return MemberResponseDTO.MemberTokenDTO.builder()
                 .accessToken(jwtProvider.createAccessToken(member))
                 .refreshToken(jwtProvider.createRefreshToken(member))
+                .build();
+    }
+
+    /** JWT를 이용한 회원 조회 */
+    @Override
+    public Member getMemberFromToken(String accessToken) {
+        // JWT 유효성 검사
+        if (!jwtProvider.validateToken(accessToken)) {
+            throw new MemberException(MemberErrorCode.INVALID_TOKEN);
+        }
+
+        // JWT에서 이메일 추출
+        String email = jwtProvider.getEmail(accessToken);
+
+        // 이메일로 사용자 조회
+        return memberRepository.findByEmail(email)
+                .orElseThrow(() -> new MemberException(MemberErrorCode.NOT_FOUND));
+    }
+
+
+    /** 회원 탈퇴 */
+    @Override
+    public void withdraw(String accessToken) {
+        Member member = getMemberFromToken(accessToken);
+        memberRepository.delete(member);
+        log.info("Member with email {} has been deleted.", member.getEmail());
+    }
+
+    /** 비밀번호 변경 요청 */
+    @Override
+    public void requestPasswordChange(MemberRequestDTO.PasswordChangeRequestDTO dto) throws MessagingException {
+        Member member = memberRepository.findByEmail(dto.getEmail())
+                .orElseThrow(() -> new MemberException(MemberErrorCode.NOT_FOUND));
+
+        // 인증 코드 생성 및 이메일 전송
+        String verificationCode = emailCommandService.sendVerificationEmail(dto.getEmail());
+        verificationCodes.put(dto.getEmail(), verificationCode);
+
+        log.info("Password change request initiated for {}", dto.getEmail());
+    }
+
+    /** 인증 코드 확인 */
+    @Override
+    public void verifyPasswordChangeCode(MemberRequestDTO.VerificationCodeDTO dto) {
+        String storedCode = verificationCodes.get(dto.getEmail());
+        if (storedCode == null || !storedCode.equals(dto.getVerificationCode())) {
+            throw new MemberException(MemberErrorCode.INVALID_VERIFICATION_CODE);
+        }
+        log.info("Password change verification successful for {}", dto.getEmail());
+    }
+
+    /** 새 비밀번호 설정*/
+    @Override
+    public void completePasswordChange(MemberRequestDTO.PasswordChangeCompleteDTO dto) {
+        Member member = memberRepository.findByEmail(dto.getEmail())
+                .orElseThrow(() -> new MemberException(MemberErrorCode.NOT_FOUND));
+
+        String encodedPassword = encoder.encode(dto.getNewPassword());
+        member.setPassword(encodedPassword); // 비밀번호 변경
+        memberRepository.save(member); // 변경 사항 저장
+
+        // 인증 정보 삭제
+        verificationCodes.remove(dto.getEmail());
+        log.info("Password successfully changed for {}", dto.getEmail());
+    }
+
+    /** 닉네임 변경 */
+    @Override
+    public void changeNickname(String accessToken, String newNickname) {
+        Member member = getMemberFromToken(accessToken);
+        member.setNickname(newNickname);
+        memberRepository.save(member);
+        log.info("Nickname changed successfully for member: {}", member.getEmail());
+    }
+
+    /** 알람 세팅 변경 */
+    @Override
+    public void changeAlarmSettings(String accessToken, Boolean alarmStatus, String alarmTime) {
+        Member member = getMemberFromToken(accessToken);
+        member.setAlarmStatus(alarmStatus);
+        member.setAlarmTime(LocalTime.parse(alarmTime));
+        memberRepository.save(member);
+        log.info("Alarm settings updated for member: {}", member.getEmail());
+    }
+
+    /** 본인 정보 조회 */
+    @Override
+    public MemberResponseDTO.MemberInfoDTO getProfile(String accessToken) {
+        Member member = getMemberFromToken(accessToken);
+
+        return MemberResponseDTO.MemberInfoDTO.builder()
+                .email(member.getEmail())
+                .name(member.getName())
+                .nickname(member.getNickname())
+                .gender(member.getGender())
+                .alarmStatus(member.getAlarmStatus())
+                .alarmTime(member.getAlarmTime())
                 .build();
     }
 }

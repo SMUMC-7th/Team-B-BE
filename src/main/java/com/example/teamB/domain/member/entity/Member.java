@@ -59,4 +59,11 @@ public class Member extends BaseEntity {
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Ootd> ootds = new ArrayList<>();
+
+    public void setNickname(String nickname) { this.nickname = nickname; }
+    public void setAlarmStatus(Boolean alarmStatus) { this.alarmStatus = alarmStatus; }
+    public void setAlarmTime(LocalTime alarmTime) { this.alarmTime = alarmTime; }
+    public void setPassword(String password) {
+        this.password = password;
+    }
 }
