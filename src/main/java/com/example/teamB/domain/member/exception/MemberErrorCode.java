@@ -21,7 +21,10 @@ public enum MemberErrorCode implements BaseErrorCode {
     INVALID_VERIFICATION_CODE(HttpStatus.BAD_REQUEST, "MEMBER400", "유효하지 않은 인증코드입니다."),
     VERIFICATION_CODE_EXPIRED(HttpStatus.BAD_REQUEST, "MEMBER400", "인증코드가 만료되었습니다."),
     UNVERIFIED_EMAIL(HttpStatus.FORBIDDEN, "MEMBER403", "인증되지 않은 이메일입니다."),
-    ;
+
+    // JWT 관련 에러
+    INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "TOKEN401", "유효하지 않은 토큰입니다.");
+
 
     private final HttpStatus status;
     private final String code;

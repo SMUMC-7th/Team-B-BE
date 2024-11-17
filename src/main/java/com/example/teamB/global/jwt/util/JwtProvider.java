@@ -1,6 +1,10 @@
 package com.example.teamB.global.jwt.util;
 
 import com.example.teamB.domain.member.entity.Member;
+import com.example.teamB.domain.member.enums.MemberStatus;
+import com.example.teamB.domain.member.exception.MemberErrorCode;
+import com.example.teamB.domain.member.exception.MemberException;
+import com.example.teamB.domain.member.repository.MemberRepository;
 import com.example.teamB.global.jwt.exception.AuthException;
 import com.example.teamB.global.jwt.exception.JwtErrorCode;
 import io.jsonwebtoken.*;
@@ -19,6 +23,8 @@ import java.util.Map;
 @Component
 public class JwtProvider {
 
+    private final MemberRepository memberRepository;
+
     // JWT 서명을 위한 비밀 키
     private SecretKey secret;
 
@@ -29,7 +35,8 @@ public class JwtProvider {
     private long refreshExpiration;
 
     // application.yml 에서 값을 가져와 초기화
-    public JwtProvider(@Value("${Jwt.secret}") String secret, @Value("${Jwt.token.access-expiration-time}") long accessExpiration, @Value("${Jwt.token.refresh-expiration-time}") long refreshExpiration) {
+    public JwtProvider(MemberRepository memberRepository, @Value("${Jwt.secret}") String secret, @Value("${Jwt.token.access-expiration-time}") long accessExpiration, @Value("${Jwt.token.refresh-expiration-time}") long refreshExpiration) {
+        this.memberRepository = memberRepository;
         this.secret = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8)); // 비밀 키를 설정
         this.accessExpiration = accessExpiration; // Access 토큰 만료 시간 설정
         this.refreshExpiration = refreshExpiration; // Refresh 토큰 만료 시간 설정
@@ -97,5 +104,28 @@ public class JwtProvider {
         // 토큰의 주제(subject)에서 이메일 반환
         return getClaims(token).getBody().getSubject();
     }
+
+    // 만료된 토큰인지 확인하고, 예외가 발생하면 false를 반환
+    public boolean validateToken(String token) {
+        try {
+            Jws<Claims> claims = getClaims(token);
+            String email = claims.getBody().getSubject();
+
+            // 사용자 상태 확인
+            Member member = memberRepository.findByEmail(email)
+                    .orElseThrow(() -> new MemberException(MemberErrorCode.NOT_FOUND));
+
+            if (member.getStatus() == MemberStatus.INACTIVE) {
+                throw new MemberException(MemberErrorCode.INACTIVE_ACCOUNT);
+            }
+
+            return !claims.getBody().getExpiration().before(new Date());
+        } catch (JwtException e) {
+            log.error("Invalid JWT token: {}", e.getMessage());
+            return false;
+        }
+    }
+
+
 
 }

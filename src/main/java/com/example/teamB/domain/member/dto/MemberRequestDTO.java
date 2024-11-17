@@ -77,36 +77,46 @@ public class MemberRequestDTO {
         private String password;
     }
 
-    /** 닉네임 변경 요청 DTO */
-    @Getter
-    @Builder
-    @AllArgsConstructor
-    @NoArgsConstructor
-    public static class NicknameChangeDTO {
-        private String newNickname;
-    }
-
     /** 비밀번호 변경 요청 DTO */
     @Getter
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class PasswordChangeDTO {
-
-        private String oldPassword;
-
-        private String newPassword;
+    public static class PasswordChangeRequestDTO {
+        @Email
+        private String email;
     }
 
-    /** 알람 세팅 요청 DTO */
+    /** 비밀번호 변경 완료 DTO */
     @Getter
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class AlarmSettingDTO {
+    public static class PasswordChangeCompleteDTO {
+        @Email
+        private String email;
 
-        private Boolean alarmStatus;
+        @NotBlank
+        private String newPassword;
+    }
 
-        private String alarmTime; // "HH:mm" 형식
+    /** 닉네임 변경 요청 DTO */
+    @Getter
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class ChangeNicknameDTO {
+        @NotBlank
+        private String newNickname;
+    }
+
+    /** 알람 설정 변경 요청 DTO */
+    @Getter
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class ChangeAlarmSettingsDTO {
+        private Boolean alarmStatus; // 알람 활성화 여부
+        private String alarmTime;    // 알람 시간, "HH:mm" 형식
     }
 }

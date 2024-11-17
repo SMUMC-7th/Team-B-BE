@@ -9,6 +9,7 @@ import com.example.teamB.domain.member.repository.MemberRepository;
 import com.example.teamB.domain.member.service.command.MemberCommandService;
 import com.example.teamB.global.apiPayload.CustomResponse;
 import com.example.teamB.global.apiPayload.code.BaseSuccessCode;
+import com.example.teamB.global.jwt.util.JwtProvider;
 import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +26,7 @@ import org.springframework.web.bind.annotation.*;
 public class MemberController {
 
     private final MemberCommandService memberCommandService;
+    private final JwtProvider jwtProvider;
 
     /** 1단계: 회원가입 요청 DTO
      * 이메일, 비밀번호 입력
@@ -54,9 +56,70 @@ public class MemberController {
     public CustomResponse<MemberResponseDTO.MemberTokenDTO> completeSignup(@RequestBody @Valid MemberRequestDTO.SignupCompleteDTO dto) {
         return CustomResponse.onSuccess(memberCommandService.completeSignup(dto));
     }
+
     /** 회원 로그인 API */
     @PostMapping("/login")
     public CustomResponse<MemberResponseDTO.MemberTokenDTO> login(@RequestBody MemberRequestDTO.MemberLoginDTO dto) {
         return CustomResponse.onSuccess(memberCommandService.login(dto));
     }
+
+    /** 회원 탈퇴 API */
+    @PostMapping("/withdraw")
+    public CustomResponse<Void> withdraw(@RequestHeader("Authorization") String authorizationHeader) {
+        // "Bearer " 제거
+        String accessToken = authorizationHeader.replace("Bearer ", "");
+        memberCommandService.withdraw(accessToken);
+        return CustomResponse.onSuccess(null);
+    }
+
+
+    /** 비밀번호 변경 요청 */
+    @PostMapping("/password/change/request")
+    public CustomResponse<Void> requestPasswordChange(@RequestBody @Valid MemberRequestDTO.PasswordChangeRequestDTO dto) throws MessagingException {
+        memberCommandService.requestPasswordChange(dto);
+        return CustomResponse.onSuccess(null);
+    }
+
+    /** 비밀번호 변경 이메일 인증 */
+    @PostMapping("/password/change/verify")
+    public CustomResponse<Void> verifyPasswordChangeCode(@RequestBody @Valid MemberRequestDTO.VerificationCodeDTO dto) {
+        memberCommandService.verifyPasswordChangeCode(dto);
+        return CustomResponse.onSuccess(null);
+    }
+
+    /** 새 비밀번호 입력 */
+    @PostMapping("/password/change/complete")
+    public CustomResponse<Void> completePasswordChange(@RequestBody @Valid MemberRequestDTO.PasswordChangeCompleteDTO dto) {
+        memberCommandService.completePasswordChange(dto);
+        return CustomResponse.onSuccess(null);
+    }
+
+    /** 닉네임 변경 */
+    @PostMapping("/nickname")
+    public CustomResponse<Void> changeNickname(
+            @RequestHeader("Authorization") String authorizationHeader,
+            @RequestBody @Valid MemberRequestDTO.ChangeNicknameDTO dto) {
+        String accessToken = authorizationHeader.replace("Bearer ", "");
+        memberCommandService.changeNickname(accessToken, dto.getNewNickname());
+        return CustomResponse.onSuccess(null);
+    }
+
+    /** 알람 설정 변경 */
+    @PostMapping("/alarm-settings")
+    public CustomResponse<Void> changeAlarmSettings(
+            @RequestHeader("Authorization") String authorizationHeader,
+            @RequestBody @Valid MemberRequestDTO.ChangeAlarmSettingsDTO dto) {
+        String accessToken = authorizationHeader.replace("Bearer ", "");
+        memberCommandService.changeAlarmSettings(accessToken, dto.getAlarmStatus(), dto.getAlarmTime());
+        return CustomResponse.onSuccess(null);
+    }
+
+    /** 자기 정보 조회 */
+    @GetMapping("/profile")
+    public CustomResponse<MemberResponseDTO.MemberInfoDTO> getMyInfo(@RequestHeader("Authorization") String authorizationHeader) {
+        String accessToken = authorizationHeader.replace("Bearer ", "");
+        MemberResponseDTO.MemberInfoDTO myInfo = memberCommandService.getProfile(accessToken);
+        return CustomResponse.onSuccess(myInfo);
+    }
+
 }
