@@ -156,6 +156,7 @@ public class MemberCommandServiceImpl implements MemberCommandService {
         log.info("Password change request initiated for {}", dto.getEmail());
     }
 
+
     /** 인증 코드 확인 */
     @Override
     public void verifyPasswordChangeCode(MemberRequestDTO.VerificationCodeDTO dto) {
@@ -183,8 +184,8 @@ public class MemberCommandServiceImpl implements MemberCommandService {
 
     /** 닉네임 변경 */
     @Override
-    public void changeNickname(String accessToken, String newNickname) {
-        Member member = memberQueryService.getMemberFromToken(accessToken);
+    @Transactional
+    public void changeNickname(Member member, String newNickname) {
         member.setNickname(newNickname);
         memberRepository.save(member);
         log.info("Nickname changed successfully for member: {}", member.getEmail());
@@ -192,13 +193,11 @@ public class MemberCommandServiceImpl implements MemberCommandService {
 
     /** 알람 세팅 변경 */
     @Override
-    public void changeAlarmSettings(String accessToken, Boolean alarmStatus, String alarmTime) {
-        Member member = memberQueryService.getMemberFromToken(accessToken);
+    public void changeAlarmSettings(Member member, Boolean alarmStatus, String alarmTime) {
         member.setAlarmStatus(alarmStatus);
         member.setAlarmTime(LocalTime.parse(alarmTime));
         memberRepository.save(member);
         log.info("Alarm settings updated for member: {}", member.getEmail());
     }
-
 
 }

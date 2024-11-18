@@ -14,7 +14,7 @@ public interface MemberCommandService {
     void requestPasswordChange(MemberRequestDTO.PasswordChangeRequestDTO dto) throws MessagingException; // 비밀번호 변경 요청
     void verifyPasswordChangeCode(MemberRequestDTO.VerificationCodeDTO dto); // 비밀번호 변경 인증 코드 검증
     void completePasswordChange(MemberRequestDTO.PasswordChangeCompleteDTO dto); // 비밀번호 변경 완료
-    void changeNickname(String accessToken, String newNickname); // 닉네임 변경
-    void changeAlarmSettings(String accessToken, Boolean alarmStatus, String alarmTime); // 알람 설정 변경\
+    void changeNickname(Member member, String newNickname); // 닉네임 변경
+    void changeAlarmSettings(Member member, Boolean alarmStatus, String alarmTime); // 알람 설정 변경\
 
 }
