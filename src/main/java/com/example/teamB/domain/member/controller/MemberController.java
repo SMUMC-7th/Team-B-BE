@@ -58,16 +58,6 @@ public class MemberController {
         return CustomResponse.onSuccess(memberCommandService.login(dto));
     }
 
-    /** 회원 탈퇴 API
-    @Operation(summary = "회원 탈퇴", description = "회원 계정을 영구적으로 삭제합니다.")
-    @PostMapping("/withdraw")
-    public CustomResponse<Void> withdraw(@RequestHeader("Authorization") String authorizationHeader) {
-        // "Bearer " 제거
-        String accessToken = authorizationHeader.replace("Bearer ", "");
-        memberCommandService.withdraw(accessToken);
-        return CustomResponse.onSuccess(null);
-    }*/
-
     /** 회원 탈퇴 API */
     @Operation(summary = "회원 탈퇴", description = "회원 계정을 영구적으로 삭제합니다.")
     @PostMapping("/withdraw")
@@ -75,8 +65,6 @@ public class MemberController {
         memberCommandService.withdraw(member);
         return CustomResponse.onSuccess(null);
     }
-
-
 
     /** 비밀번호 변경 요청 */
     @Operation(summary = "1. 비밀번호 변경 요청", description = "사용자의 이메일로 비밀번호 변경 요청을 전송합니다.")
@@ -106,10 +94,9 @@ public class MemberController {
     @Operation(summary = "닉네임 변경", description = "회원의 닉네임을 변경합니다.")
     @PatchMapping("/nickname")
     public CustomResponse<Void> changeNickname(
-            @RequestHeader("Authorization") String authorizationHeader,
+            @CurrentMember Member member,
             @RequestBody @Valid MemberRequestDTO.ChangeNicknameDTO dto) {
-        String accessToken = authorizationHeader.replace("Bearer ", "");
-        memberCommandService.changeNickname(accessToken, dto.getNewNickname());
+        memberCommandService.changeNickname(member, dto.getNewNickname());
         return CustomResponse.onSuccess(null);
     }
 
@@ -117,19 +104,17 @@ public class MemberController {
     @Operation(summary = "알람 설정 변경", description = "회원의 알람 상태와 시간을 변경합니다.")
     @PatchMapping("/alarm-settings")
     public CustomResponse<Void> changeAlarmSettings(
-            @RequestHeader("Authorization") String authorizationHeader,
+            @CurrentMember Member member,
             @RequestBody @Valid MemberRequestDTO.ChangeAlarmSettingsDTO dto) {
-        String accessToken = authorizationHeader.replace("Bearer ", "");
-        memberCommandService.changeAlarmSettings(accessToken, dto.getAlarmStatus(), dto.getAlarmTime());
+        memberCommandService.changeAlarmSettings(member, dto.getAlarmStatus(), dto.getAlarmTime());
         return CustomResponse.onSuccess(null);
     }
 
     /** 자기 정보 조회 */
     @Operation(summary = "내 정보 조회", description = "로그인된 회원의 프로필 정보를 조회합니다.")
     @GetMapping("/profile")
-    public CustomResponse<MemberResponseDTO.MemberInfoDTO> getMyInfo(@RequestHeader("Authorization") String authorizationHeader) {
-        String accessToken = authorizationHeader.replace("Bearer ", "");
-        MemberResponseDTO.MemberInfoDTO myInfo = memberQueryService.getProfile(accessToken);
+    public CustomResponse<MemberResponseDTO.MemberInfoDTO> getMyInfo(@CurrentMember Member member) {
+        MemberResponseDTO.MemberInfoDTO myInfo = memberQueryService.getProfile(member);
         return CustomResponse.onSuccess(myInfo);
     }
 

@@ -19,26 +19,9 @@ public class MemberQueryServiceImpl implements MemberQueryService{
     private final MemberRepository memberRepository;
     private final JwtProvider jwtProvider;
 
-    /** JWT를 이용한 회원 조회 */
-    @Override
-    public Member getMemberFromToken(String accessToken) {
-        // JWT 유효성 검사
-        if (!jwtProvider.validateToken(accessToken)) {
-            throw new MemberException(MemberErrorCode.INVALID_TOKEN);
-        }
-
-        // JWT에서 이메일 추출
-        String email = jwtProvider.getEmail(accessToken);
-
-        // 이메일로 사용자 조회
-        return memberRepository.findByEmail(email)
-                .orElseThrow(() -> new MemberException(MemberErrorCode.NOT_FOUND));
-    }
-
     /** 본인 정보 조회 */
     @Override
-    public MemberResponseDTO.MemberInfoDTO getProfile(String accessToken) {
-        Member member = getMemberFromToken(accessToken);
+    public MemberResponseDTO.MemberInfoDTO getProfile(Member member) {
 
         return MemberResponseDTO.MemberInfoDTO.builder()
                 .email(member.getEmail())
