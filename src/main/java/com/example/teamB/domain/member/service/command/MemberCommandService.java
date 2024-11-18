@@ -10,7 +10,7 @@ public interface MemberCommandService {
     void verifyCode(String email, String verificationCode); // 인증 코드 검증
     MemberResponseDTO.MemberTokenDTO signup(MemberRequestDTO.SignupDTO dto); // 회원가입 완료
     MemberResponseDTO.MemberTokenDTO login(MemberRequestDTO.MemberLoginDTO dto); // 로그인
-    void withdraw(String accessToken); // 탈퇴
+    void withdraw(Member member); // 탈퇴
     void requestPasswordChange(MemberRequestDTO.PasswordChangeRequestDTO dto) throws MessagingException; // 비밀번호 변경 요청
     void verifyPasswordChangeCode(MemberRequestDTO.VerificationCodeDTO dto); // 비밀번호 변경 인증 코드 검증
     void completePasswordChange(MemberRequestDTO.PasswordChangeCompleteDTO dto); // 비밀번호 변경 완료
