@@ -7,6 +7,7 @@ import com.example.teamB.domain.member.exception.MemberErrorCode;
 import com.example.teamB.domain.member.exception.MemberException;
 import com.example.teamB.domain.member.repository.MemberRepository;
 import com.example.teamB.domain.member.service.command.MemberCommandService;
+import com.example.teamB.domain.member.service.query.MemberQueryService;
 import com.example.teamB.global.apiPayload.CustomResponse;
 import com.example.teamB.global.apiPayload.code.BaseSuccessCode;
 import com.example.teamB.global.jwt.util.JwtProvider;
@@ -27,12 +28,13 @@ import org.springframework.web.bind.annotation.*;
 public class MemberController {
 
     private final MemberCommandService memberCommandService;
+    private final MemberQueryService memberQueryService;
     private final JwtProvider jwtProvider;
 
     /** 1단계: 회원가입 요청 DTO
      * 이메일, 비밀번호 입력
      * 이메일 중복 확인 및 인증 메일 전송*/
-    @Operation(summary = "회원가입 요청 및 인증", description = "회원가입을 위해 이메일로 인증 코드를 전송합니다.")
+    @Operation(summary = "1. 회원가입 요청 및 인증", description = "회원가입을 위해 이메일로 인증 코드를 전송합니다.")
     @PostMapping("/signup/request-and-verify")
     public CustomResponse<Void> signupRequestAndVerifyEmail(@RequestBody @Valid MemberRequestDTO.SignupRequestAndVerifyEmailDTO dto) throws MessagingException {
         memberCommandService.signupRequestAndVerifyEmail(dto);
@@ -40,26 +42,19 @@ public class MemberController {
     }
 
     /** 2단계: 인증 코드 검증 */
-    @Operation(summary = "회원가입 인증 코드 확인", description = "이메일로 전송된 인증 코드를 확인합니다.")
+    @Operation(summary = "2. 회원가입 인증 코드 확인", description = "이메일로 전송된 인증 코드를 확인합니다.")
     @PostMapping("/signup/verify-code")
     public CustomResponse<Void> verifyCode(@RequestBody @Valid MemberRequestDTO.VerificationCodeDTO dto) {
         memberCommandService.verifyCode(dto.getEmail(), dto.getVerificationCode());
         return CustomResponse.onSuccess(null);
     }
 
-    /** 3단계: 추가 정보 입력 (이름, 닉네임, 젠더 입력) */
-    @Operation(summary = "추가 정보 입력", description = "회원가입 시 이름, 닉네임, 성별 등 추가 정보를 입력합니다.")
-    @PostMapping("/signup/additional-info")
-    public CustomResponse<Void> addAdditionalInfo(@RequestBody @Valid MemberRequestDTO.AdditionalInfoDTO dto) {
-        memberCommandService.addAdditionalInfo(dto);
-        return CustomResponse.onSuccess(null);
-    }
-
-    /** 4단계: 회원가입 완료 */
-    @Operation(summary = "회원가입 완료", description = "회원가입 과정을 완료하고 회원 계정을 생성합니다.")
-    @PostMapping("/signup/complete")
-    public CustomResponse<MemberResponseDTO.MemberTokenDTO> completeSignup(@RequestBody @Valid MemberRequestDTO.SignupCompleteDTO dto) {
-        return CustomResponse.onSuccess(memberCommandService.completeSignup(dto));
+    /** 3단계: 회원가입 완료 (+ 추가 정보 입력) */
+    @Operation(summary = "3. 회원가입", description = "회원가입 시 추가 정보를 입력하고 계정을 생성합니다.")
+    @PostMapping("/signup")
+    public CustomResponse<MemberResponseDTO.MemberTokenDTO> signup(
+            @RequestBody @Valid MemberRequestDTO.SignupDTO dto) {
+        return CustomResponse.onSuccess(memberCommandService.signup(dto));
     }
 
     /** 회원 로그인 API */
@@ -81,7 +76,7 @@ public class MemberController {
 
 
     /** 비밀번호 변경 요청 */
-    @Operation(summary = "비밀번호 변경 요청", description = "사용자의 이메일로 비밀번호 변경 요청을 전송합니다.")
+    @Operation(summary = "1. 비밀번호 변경 요청", description = "사용자의 이메일로 비밀번호 변경 요청을 전송합니다.")
     @PostMapping("/password/change/request")
     public CustomResponse<Void> requestPasswordChange(@RequestBody @Valid MemberRequestDTO.PasswordChangeRequestDTO dto) throws MessagingException {
         memberCommandService.requestPasswordChange(dto);
@@ -89,7 +84,7 @@ public class MemberController {
     }
 
     /** 비밀번호 변경 이메일 인증 */
-    @Operation(summary = "비밀번호 변경 인증", description = "이메일로 전송된 인증 코드를 확인합니다.")
+    @Operation(summary = "2. 비밀번호 변경 인증", description = "이메일로 전송된 인증 코드를 확인합니다.")
     @PostMapping("/password/change/verify")
     public CustomResponse<Void> verifyPasswordChangeCode(@RequestBody @Valid MemberRequestDTO.VerificationCodeDTO dto) {
         memberCommandService.verifyPasswordChangeCode(dto);
@@ -97,7 +92,7 @@ public class MemberController {
     }
 
     /** 새 비밀번호 입력 */
-    @Operation(summary = "새 비밀번호 설정", description = "새로운 비밀번호를 설정합니다.")
+    @Operation(summary = "3. 비밀번호 변경", description = "새로운 비밀번호를 설정합니다.")
     @PatchMapping("/password/change/complete")
     public CustomResponse<Void> completePasswordChange(@RequestBody @Valid MemberRequestDTO.PasswordChangeCompleteDTO dto) {
         memberCommandService.completePasswordChange(dto);
@@ -131,7 +126,7 @@ public class MemberController {
     @GetMapping("/profile")
     public CustomResponse<MemberResponseDTO.MemberInfoDTO> getMyInfo(@RequestHeader("Authorization") String authorizationHeader) {
         String accessToken = authorizationHeader.replace("Bearer ", "");
-        MemberResponseDTO.MemberInfoDTO myInfo = memberCommandService.getProfile(accessToken);
+        MemberResponseDTO.MemberInfoDTO myInfo = memberQueryService.getProfile(accessToken);
         return CustomResponse.onSuccess(myInfo);
     }
 

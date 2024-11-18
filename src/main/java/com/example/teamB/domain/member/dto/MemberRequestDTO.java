@@ -38,32 +38,19 @@ public class MemberRequestDTO {
         private String verificationCode;
     }
 
-    /** 3단계: 추가 정보 입력 DTO (이름, 닉네임, 젠더 입력) */
+    /** 3단계: 회원가입 완료 (+ 추가 정보 입력) */
     @Getter
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class AdditionalInfoDTO {
+    public static class SignupDTO {
 
         private String email;
-
         private String name;
-
         private String nickname;
-
         private Gender gender;
     }
 
-    /** 4단계: 회원가입 완료 요청 DTO */
-    @Getter
-    @Builder
-    @AllArgsConstructor
-    @NoArgsConstructor
-    public static class SignupCompleteDTO {
-
-        private String email;
-
-    }
 
     /** 로그인 요청 DTO */
     @Getter

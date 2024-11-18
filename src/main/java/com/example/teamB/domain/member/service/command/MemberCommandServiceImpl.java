@@ -7,6 +7,7 @@ import com.example.teamB.domain.member.dto.MemberResponseDTO;
 import com.example.teamB.domain.member.entity.Member;
 import com.example.teamB.domain.member.exception.MemberErrorCode;
 import com.example.teamB.domain.member.exception.MemberException;
+import com.example.teamB.domain.member.service.query.MemberQueryService;
 import com.example.teamB.global.jwt.util.JwtProvider;
 import jakarta.mail.MessagingException;
 import jakarta.transaction.Transactional;
@@ -29,10 +30,10 @@ public class MemberCommandServiceImpl implements MemberCommandService {
     private final PasswordEncoder encoder;
     private final JwtProvider jwtProvider;
     private final EmailCommandService emailCommandService;
+    private final MemberQueryService memberQueryService;
 
 
     private final Map<String, String> verificationCodes = new ConcurrentHashMap<>();
-    private final Map<String, MemberRequestDTO.AdditionalInfoDTO> additionalInfoMap = new ConcurrentHashMap<>();
     private final Map<String, String> passwordsMap = new ConcurrentHashMap<>();
 
     /** 1단계: 회원가입 요청 및 이메일 인증 */
@@ -63,51 +64,33 @@ public class MemberCommandServiceImpl implements MemberCommandService {
         log.info("Verification code successfully validated for email: {}", email);
     }
 
-    /** 3단계: 추가 정보 입력 */
+    /** 3단계: 회원가입 완료 (+ 추가 정보 입력) */
     @Override
-    public void addAdditionalInfo(MemberRequestDTO.AdditionalInfoDTO dto) {
-        log.info("Storing additional info: {}", dto);
-        additionalInfoMap.put(dto.getEmail(), MemberRequestDTO.AdditionalInfoDTO.builder()
-                .name(dto.getName())
-                .nickname(dto.getNickname())
-                .gender(dto.getGender())
-                .build());
-        log.info("Current additionalInfoMap: {}", additionalInfoMap);
-    }
-
-    /** 4단계: 회원가입 완료 */
-    @Override
-    public MemberResponseDTO.MemberTokenDTO completeSignup(MemberRequestDTO.SignupCompleteDTO dto) {
+    public MemberResponseDTO.MemberTokenDTO signup(MemberRequestDTO.SignupDTO dto) {
         log.info("Completing signup for email: {}", dto.getEmail());
 
         String emailKey = dto.getEmail().trim().toLowerCase();
 
+        // 인증 코드 검증
         if (!verificationCodes.containsKey(emailKey)) {
             log.error("Email not verified: {}", emailKey);
             throw new MemberException(MemberErrorCode.UNVERIFIED_EMAIL);
         }
 
-        MemberRequestDTO.AdditionalInfoDTO additionalInfo = additionalInfoMap.get(emailKey);
-        if (additionalInfo == null) {
-            log.error("No additional info found for email: {}", emailKey);
-            throw new MemberException(MemberErrorCode.INVALID_VERIFICATION_CODE);
-        }
-        log.info("Retrieved additional info: {}", additionalInfo);
-
+        // 비밀번호 확인
         String encodedPassword = passwordsMap.get(emailKey);
         if (encodedPassword == null) {
             log.error("No password found for email: {}", emailKey);
             throw new MemberException(MemberErrorCode.UNVERIFIED_EMAIL);
         }
-        log.info("Retrieved encoded password for email: {}", emailKey);
 
         // Member 저장
         Member member = Member.builder()
                 .email(emailKey)
                 .password(encodedPassword)
-                .name(additionalInfo.getName())
-                .nickname(additionalInfo.getNickname())
-                .gender(additionalInfo.getGender())
+                .name(dto.getName())
+                .nickname(dto.getNickname())
+                .gender(dto.getGender())
                 .alarmStatus(false) // 기본 알람 상태
                 .alarmTime(LocalTime.of(9, 0)) // 기본 알람 시간: 오전 9시
                 .build();
@@ -122,7 +105,6 @@ public class MemberCommandServiceImpl implements MemberCommandService {
 
         // 데이터 정리
         verificationCodes.remove(emailKey);
-        additionalInfoMap.remove(emailKey);
         passwordsMap.remove(emailKey);
 
         return MemberResponseDTO.MemberTokenDTO.builder()
@@ -130,6 +112,7 @@ public class MemberCommandServiceImpl implements MemberCommandService {
                 .refreshToken(jwtProvider.createRefreshToken(member))
                 .build();
     }
+
 
     /** 로그인 */
     @Override
@@ -152,27 +135,11 @@ public class MemberCommandServiceImpl implements MemberCommandService {
                 .build();
     }
 
-    /** JWT를 이용한 회원 조회 */
-    @Override
-    public Member getMemberFromToken(String accessToken) {
-        // JWT 유효성 검사
-        if (!jwtProvider.validateToken(accessToken)) {
-            throw new MemberException(MemberErrorCode.INVALID_TOKEN);
-        }
-
-        // JWT에서 이메일 추출
-        String email = jwtProvider.getEmail(accessToken);
-
-        // 이메일로 사용자 조회
-        return memberRepository.findByEmail(email)
-                .orElseThrow(() -> new MemberException(MemberErrorCode.NOT_FOUND));
-    }
-
 
     /** 회원 탈퇴 */
     @Override
     public void withdraw(String accessToken) {
-        Member member = getMemberFromToken(accessToken);
+        Member member = memberQueryService.getMemberFromToken(accessToken);
         memberRepository.delete(member);
         log.info("Member with email {} has been deleted.", member.getEmail());
     }
@@ -218,7 +185,7 @@ public class MemberCommandServiceImpl implements MemberCommandService {
     /** 닉네임 변경 */
     @Override
     public void changeNickname(String accessToken, String newNickname) {
-        Member member = getMemberFromToken(accessToken);
+        Member member = memberQueryService.getMemberFromToken(accessToken);
         member.setNickname(newNickname);
         memberRepository.save(member);
         log.info("Nickname changed successfully for member: {}", member.getEmail());
@@ -227,25 +194,12 @@ public class MemberCommandServiceImpl implements MemberCommandService {
     /** 알람 세팅 변경 */
     @Override
     public void changeAlarmSettings(String accessToken, Boolean alarmStatus, String alarmTime) {
-        Member member = getMemberFromToken(accessToken);
+        Member member = memberQueryService.getMemberFromToken(accessToken);
         member.setAlarmStatus(alarmStatus);
         member.setAlarmTime(LocalTime.parse(alarmTime));
         memberRepository.save(member);
         log.info("Alarm settings updated for member: {}", member.getEmail());
     }
 
-    /** 본인 정보 조회 */
-    @Override
-    public MemberResponseDTO.MemberInfoDTO getProfile(String accessToken) {
-        Member member = getMemberFromToken(accessToken);
 
-        return MemberResponseDTO.MemberInfoDTO.builder()
-                .email(member.getEmail())
-                .name(member.getName())
-                .nickname(member.getNickname())
-                .gender(member.getGender())
-                .alarmStatus(member.getAlarmStatus())
-                .alarmTime(member.getAlarmTime())
-                .build();
-    }
 }
