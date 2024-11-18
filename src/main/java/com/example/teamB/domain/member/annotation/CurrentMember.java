@@ -7,5 +7,5 @@ import java.lang.annotation.*;
 @Target({ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
 @Parameter(hidden = true)
-public @interface AuthenticatedMember {
+public @interface CurrentMember {
 }

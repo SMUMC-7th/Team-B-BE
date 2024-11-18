@@ -1,6 +1,6 @@
 package com.example.teamB.domain.member.annotation.resolver;
 
-import com.example.teamB.domain.member.annotation.AuthenticatedMember;
+import com.example.teamB.domain.member.annotation.CurrentMember;
 import com.example.teamB.domain.member.entity.Member;
 import com.example.teamB.domain.member.service.query.MemberQueryService;
 import com.example.teamB.global.jwt.util.JwtProvider;
@@ -23,7 +23,7 @@ public class AuthenticatedMemberResolver implements HandlerMethodArgumentResolve
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
-        return parameter.hasParameterAnnotation(AuthenticatedMember.class) && parameter.getParameterType().isAssignableFrom(Member.class);
+        return parameter.hasParameterAnnotation(CurrentMember.class) && parameter.getParameterType().isAssignableFrom(Member.class);
     }
 
     @Override
