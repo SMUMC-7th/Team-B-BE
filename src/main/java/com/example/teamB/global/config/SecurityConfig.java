@@ -40,8 +40,7 @@ public class SecurityConfig {
             "/v3/api-docs/**",
             "/api/users/signup/request-and-verify",
             "/api/users/signup/verify-code",
-            "/api/users/signup/additional-info",
-            "/api/users/signup/complete",
+            "/api/users/signup",
             "/api/users/login",
             "/oauth2/callback/**"
     };
