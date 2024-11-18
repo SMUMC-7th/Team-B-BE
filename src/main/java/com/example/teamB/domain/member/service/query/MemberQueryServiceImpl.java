@@ -2,15 +2,13 @@ package com.example.teamB.domain.member.service.query;
 
 import com.example.teamB.domain.member.dto.MemberResponseDTO;
 import com.example.teamB.domain.member.entity.Member;
-import com.example.teamB.domain.member.exception.MemberErrorCode;
-import com.example.teamB.domain.member.exception.MemberException;
 import com.example.teamB.domain.member.repository.MemberRepository;
-import com.example.teamB.domain.member.service.command.EmailCommandService;
 import com.example.teamB.global.jwt.util.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -34,7 +32,7 @@ public class MemberQueryServiceImpl implements MemberQueryService{
     }
 
     @Override
-    public Object getMember(String email) {
-        return null;
+    public Member getMember(String email) {
+        return memberRepository.findByEmail(email).get();
     }
 }
