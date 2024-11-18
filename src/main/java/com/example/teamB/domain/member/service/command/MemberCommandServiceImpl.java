@@ -138,8 +138,7 @@ public class MemberCommandServiceImpl implements MemberCommandService {
 
     /** 회원 탈퇴 */
     @Override
-    public void withdraw(String accessToken) {
-        Member member = memberQueryService.getMemberFromToken(accessToken);
+    public void withdraw(Member member) {
         memberRepository.delete(member);
         log.info("Member with email {} has been deleted.", member.getEmail());
     }

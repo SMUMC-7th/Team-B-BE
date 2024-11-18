@@ -1,24 +1,20 @@
 package com.example.teamB.domain.member.controller;
 
+import com.example.teamB.domain.member.annotation.AuthenticatedMember;
 import com.example.teamB.domain.member.dto.MemberRequestDTO;
 import com.example.teamB.domain.member.dto.MemberResponseDTO;
 import com.example.teamB.domain.member.entity.Member;
-import com.example.teamB.domain.member.exception.MemberErrorCode;
-import com.example.teamB.domain.member.exception.MemberException;
-import com.example.teamB.domain.member.repository.MemberRepository;
+import com.example.teamB.domain.member.principal.PrincipalDetails;
 import com.example.teamB.domain.member.service.command.MemberCommandService;
 import com.example.teamB.domain.member.service.query.MemberQueryService;
 import com.example.teamB.global.apiPayload.CustomResponse;
-import com.example.teamB.global.apiPayload.code.BaseSuccessCode;
 import com.example.teamB.global.jwt.util.JwtProvider;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
@@ -64,7 +60,7 @@ public class MemberController {
         return CustomResponse.onSuccess(memberCommandService.login(dto));
     }
 
-    /** 회원 탈퇴 API */
+    /** 회원 탈퇴 API
     @Operation(summary = "회원 탈퇴", description = "회원 계정을 영구적으로 삭제합니다.")
     @PostMapping("/withdraw")
     public CustomResponse<Void> withdraw(@RequestHeader("Authorization") String authorizationHeader) {
@@ -72,7 +68,16 @@ public class MemberController {
         String accessToken = authorizationHeader.replace("Bearer ", "");
         memberCommandService.withdraw(accessToken);
         return CustomResponse.onSuccess(null);
+    }*/
+
+    /** 회원 탈퇴 API */
+    @Operation(summary = "회원 탈퇴", description = "회원 계정을 영구적으로 삭제합니다.")
+    @PostMapping("/withdraw")
+    public CustomResponse<Void> withdraw(@AuthenticatedMember Member member) {
+        memberCommandService.withdraw(member);
+        return CustomResponse.onSuccess(null);
     }
+
 
 
     /** 비밀번호 변경 요청 */
