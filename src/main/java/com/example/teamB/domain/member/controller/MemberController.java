@@ -1,6 +1,6 @@
 package com.example.teamB.domain.member.controller;
 
-import com.example.teamB.domain.member.annotation.AuthenticatedMember;
+import com.example.teamB.domain.member.annotation.CurrentMember;
 import com.example.teamB.domain.member.dto.MemberRequestDTO;
 import com.example.teamB.domain.member.dto.MemberResponseDTO;
 import com.example.teamB.domain.member.entity.Member;
@@ -73,7 +73,7 @@ public class MemberController {
     /** 회원 탈퇴 API */
     @Operation(summary = "회원 탈퇴", description = "회원 계정을 영구적으로 삭제합니다.")
     @PostMapping("/withdraw")
-    public CustomResponse<Void> withdraw(@AuthenticatedMember Member member) {
+    public CustomResponse<Void> withdraw(@CurrentMember Member member) {
         memberCommandService.withdraw(member);
         return CustomResponse.onSuccess(null);
     }
