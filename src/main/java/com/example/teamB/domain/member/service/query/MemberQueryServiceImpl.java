@@ -2,6 +2,8 @@ package com.example.teamB.domain.member.service.query;
 
 import com.example.teamB.domain.member.dto.MemberResponseDTO;
 import com.example.teamB.domain.member.entity.Member;
+import com.example.teamB.domain.member.exception.MemberErrorCode;
+import com.example.teamB.domain.member.exception.MemberException;
 import com.example.teamB.domain.member.repository.MemberRepository;
 import com.example.teamB.global.jwt.util.JwtProvider;
 import lombok.RequiredArgsConstructor;
@@ -33,6 +35,7 @@ public class MemberQueryServiceImpl implements MemberQueryService{
 
     @Override
     public Member getMember(String email) {
-        return memberRepository.findByEmail(email).get();
+        return memberRepository.findByEmail(email)
+                .orElseThrow(() -> new MemberException(MemberErrorCode.NOT_FOUND));
     }
 }

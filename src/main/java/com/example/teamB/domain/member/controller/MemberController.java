@@ -77,16 +77,20 @@ public class MemberController {
     /** 비밀번호 변경 이메일 인증 */
     @Operation(summary = "2. 비밀번호 변경 인증", description = "이메일로 전송된 인증 코드를 확인합니다.")
     @PostMapping("/password/change/verify")
-    public CustomResponse<Void> verifyPasswordChangeCode(@RequestBody @Valid MemberRequestDTO.VerificationCodeDTO dto) {
-        memberCommandService.verifyPasswordChangeCode(dto);
+    public CustomResponse<Void> verifyPasswordChangeCode(
+            @CurrentMember Member member,
+            @RequestBody @Valid MemberRequestDTO.PasswordChangeVerificationDTO dto) {
+        memberCommandService.verifyPasswordChangeCode(member, dto.getVerificationCode());
         return CustomResponse.onSuccess(null);
     }
 
     /** 새 비밀번호 입력 */
     @Operation(summary = "3. 비밀번호 변경", description = "새로운 비밀번호를 설정합니다.")
     @PatchMapping("/password/change/complete")
-    public CustomResponse<Void> completePasswordChange(@RequestBody @Valid MemberRequestDTO.PasswordChangeCompleteDTO dto) {
-        memberCommandService.completePasswordChange(dto);
+    public CustomResponse<Void> completePasswordChange(
+            @CurrentMember Member member,
+            @RequestBody @Valid MemberRequestDTO.PasswordChangeCompleteDTO dto) {
+        memberCommandService.completePasswordChange(member, dto.getNewPassword());
         return CustomResponse.onSuccess(null);
     }
 
