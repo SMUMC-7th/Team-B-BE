@@ -145,15 +145,13 @@ public class MemberCommandServiceImpl implements MemberCommandService {
 
     /** 비밀번호 변경 요청 */
     @Override
-    public void requestPasswordChange(MemberRequestDTO.PasswordChangeRequestDTO dto) throws MessagingException {
-        Member member = memberRepository.findByEmail(dto.getEmail())
-                .orElseThrow(() -> new MemberException(MemberErrorCode.NOT_FOUND));
+    public void requestPasswordChange(Member member) throws MessagingException {
 
         // 인증 코드 생성 및 이메일 전송
-        String verificationCode = emailCommandService.sendVerificationEmail(dto.getEmail());
-        verificationCodes.put(dto.getEmail(), verificationCode);
+        String verificationCode = emailCommandService.sendVerificationEmail(member.getEmail());
+        verificationCodes.put(member.getEmail(), verificationCode);
 
-        log.info("Password change request initiated for {}", dto.getEmail());
+        log.info("Password change request initiated for {}", member.getEmail());
     }
 
 

@@ -69,8 +69,8 @@ public class MemberController {
     /** 비밀번호 변경 요청 */
     @Operation(summary = "1. 비밀번호 변경 요청", description = "사용자의 이메일로 비밀번호 변경 요청을 전송합니다.")
     @PostMapping("/password/change/request")
-    public CustomResponse<Void> requestPasswordChange(@RequestBody @Valid MemberRequestDTO.PasswordChangeRequestDTO dto) throws MessagingException {
-        memberCommandService.requestPasswordChange(dto);
+    public CustomResponse<Void> requestPasswordChange(@CurrentMember Member member) throws MessagingException {
+        memberCommandService.requestPasswordChange(member);
         return CustomResponse.onSuccess(null);
     }
 

@@ -26,7 +26,7 @@ public class EmailCommandServiceImpl implements EmailCommandService {
         MimeMessageHelper helper = new MimeMessageHelper(message);
         helper.setFrom(fromEmail);
         helper.setTo(toEmail);
-        helper.setSubject("[클로디] 회원가입 인증 코드 ");
+        helper.setSubject("[클로디] 인증 코드 ");
         helper.setText("인증코드 : " + verificationCode);
 
         mailSender.send(message);
