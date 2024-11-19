@@ -58,6 +58,15 @@ public class MemberController {
         return CustomResponse.onSuccess(memberCommandService.login(dto));
     }
 
+    /** 토큰 재발급 API */
+    @Operation(summary = "토큰 재발급", description = "리프레시 토큰을 사용하여 새로운 액세스 토큰을 발급받습니다.")
+    @PostMapping("/token/reissue")
+    public CustomResponse<MemberResponseDTO.MemberTokenDTO> refreshToken(
+            @CurrentMember Member member,
+            @RequestBody @Valid MemberRequestDTO.RefreshRequest dto) {
+        return CustomResponse.onSuccess(memberCommandService.refreshToken(member, dto));
+    }
+
     /** 회원 탈퇴 API */
     @Operation(summary = "회원 탈퇴", description = "회원 계정을 영구적으로 삭제합니다.")
     @PostMapping("/withdraw")

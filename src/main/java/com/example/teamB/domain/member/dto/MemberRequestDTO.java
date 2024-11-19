@@ -51,7 +51,6 @@ public class MemberRequestDTO {
         private Gender gender;
     }
 
-
     /** 로그인 요청 DTO */
     @Getter
     @Builder
@@ -62,6 +61,15 @@ public class MemberRequestDTO {
         private String email;
 
         private String password;
+    }
+
+    /** Refresh Token 요청 DTO */
+    @Getter
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class RefreshRequest {
+        private String refreshToken;
     }
 
     /** 비밀번호 변경 인증번호 DTO */

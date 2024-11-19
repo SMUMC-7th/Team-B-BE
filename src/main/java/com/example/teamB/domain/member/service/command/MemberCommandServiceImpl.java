@@ -154,6 +154,26 @@ public class MemberCommandServiceImpl implements MemberCommandService {
         log.info("Password change request initiated for {}", member.getEmail());
     }
 
+    /** 토큰 재발급 */
+    @Override
+    public MemberResponseDTO.MemberTokenDTO refreshToken(Member member, MemberRequestDTO.RefreshRequest dto) {
+        if (!jwtProvider.validateToken(dto.getRefreshToken())) {
+            throw new MemberException(MemberErrorCode.INVALID_TOKEN);
+        }
+
+        String tokenEmail = jwtProvider.getEmail(dto.getRefreshToken());
+        if (!member.getEmail().equals(tokenEmail)) {
+            throw new MemberException(MemberErrorCode.UNAUTHORIZED_ACCESS); // 권한 없음
+        }
+
+        String newAccessToken = jwtProvider.createAccessToken(member);
+        String newRefreshToken = jwtProvider.createRefreshToken(member);
+
+        return MemberResponseDTO.MemberTokenDTO.builder()
+                .accessToken(newAccessToken)
+                .refreshToken(newRefreshToken)
+                .build();
+    }
 
     /** 인증 코드 확인 */
     @Override
