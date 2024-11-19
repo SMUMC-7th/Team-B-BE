@@ -157,27 +157,23 @@ public class MemberCommandServiceImpl implements MemberCommandService {
 
     /** 인증 코드 확인 */
     @Override
-    public void verifyPasswordChangeCode(MemberRequestDTO.VerificationCodeDTO dto) {
-        String storedCode = verificationCodes.get(dto.getEmail());
-        if (storedCode == null || !storedCode.equals(dto.getVerificationCode())) {
+    public void verifyPasswordChangeCode(Member member, String verificationCode) {
+        String storedCode = verificationCodes.get(member.getEmail());
+        if (storedCode == null || !storedCode.equals(verificationCode)) {
             throw new MemberException(MemberErrorCode.INVALID_VERIFICATION_CODE);
         }
-        log.info("Password change verification successful for {}", dto.getEmail());
+        log.info("Password change verification successful for {}", member.getEmail());
     }
 
     /** 새 비밀번호 설정*/
     @Override
-    public void completePasswordChange(MemberRequestDTO.PasswordChangeCompleteDTO dto) {
-        Member member = memberRepository.findByEmail(dto.getEmail())
-                .orElseThrow(() -> new MemberException(MemberErrorCode.NOT_FOUND));
+    public void completePasswordChange(Member member, String newPassword) {
+        String encodedPassword = encoder.encode(newPassword);
+        member.setPassword(encodedPassword);
+        memberRepository.save(member);
 
-        String encodedPassword = encoder.encode(dto.getNewPassword());
-        member.setPassword(encodedPassword); // 비밀번호 변경
-        memberRepository.save(member); // 변경 사항 저장
-
-        // 인증 정보 삭제
-        verificationCodes.remove(dto.getEmail());
-        log.info("Password successfully changed for {}", dto.getEmail());
+        verificationCodes.remove(member.getEmail());
+        log.info("Password successfully changed for {}", member.getEmail());
     }
 
     /** 닉네임 변경 */

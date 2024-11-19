@@ -64,14 +64,13 @@ public class MemberRequestDTO {
         private String password;
     }
 
-    /** 비밀번호 변경 요청 DTO */
+    /** 비밀번호 변경 인증번호 DTO */
     @Getter
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class PasswordChangeRequestDTO {
-        @Email
-        private String email;
+    public static class PasswordChangeVerificationDTO {
+        private String verificationCode; // 인증 코드만 포함
     }
 
     /** 비밀번호 변경 완료 DTO */
@@ -80,11 +79,7 @@ public class MemberRequestDTO {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class PasswordChangeCompleteDTO {
-        @Email
-        private String email;
-
-        @NotBlank
-        private String newPassword;
+        private String newPassword; // 새 비밀번호만 포함
     }
 
     /** 닉네임 변경 요청 DTO */
