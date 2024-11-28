@@ -42,6 +42,7 @@ public class SecurityConfig {
             "/api/users/signup/verify-code",
             "/api/users/signup",
             "/api/users/login",
+            "/api/users/token/reissue",
             "/oauth2/callback/**"
     };
 

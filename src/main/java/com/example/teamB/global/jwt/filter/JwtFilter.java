@@ -29,10 +29,27 @@ public class JwtFilter extends OncePerRequestFilter {
     private final JwtProvider jwtProvider;
     private final PrincipalDetailsService principalDetailsService;
 
+    private final String[] allowUrl = {
+            "/api/users/signup/request-and-verify",
+            "/api/users/signup/verify-code",
+            "/api/users/signup",
+            "/api/users/login",
+            "/api/users/token/reissue"
+    };
+
 
     // JWT 검증 및 인증 로직 구현 메서드
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+
+        String requestURI = request.getRequestURI();
+
+        // 요청 URL이 allowUrl에 포함되어 있다면 필터링 건너뜀
+        if (isExcludedUrl(requestURI)) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         try {
             // "Authorization" 헤더에서 토큰 가져옴
             String header = request.getHeader("Authorization");
@@ -75,5 +92,14 @@ public class JwtFilter extends OncePerRequestFilter {
             om.writeValue(response.getOutputStream(), customResponse);
 
         }
+    }
+
+    private boolean isExcludedUrl(String requestURI) {
+        for (String url : allowUrl) {
+            if (requestURI.startsWith(url)) {
+                return true;
+            }
+        }
+        return false;
     }
 }
