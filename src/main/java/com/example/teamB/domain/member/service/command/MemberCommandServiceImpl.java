@@ -156,16 +156,20 @@ public class MemberCommandServiceImpl implements MemberCommandService {
 
     /** 토큰 재발급 */
     @Override
-    public MemberResponseDTO.MemberTokenDTO refreshToken(Member member, MemberRequestDTO.RefreshRequest dto) {
-        if (!jwtProvider.validateToken(dto.getRefreshToken())) {
+    public MemberResponseDTO.MemberTokenDTO refreshToken(String refreshToken) {
+        // Refresh Token 유효성 검증
+        if (!jwtProvider.validateToken(refreshToken)) {
             throw new MemberException(MemberErrorCode.INVALID_TOKEN);
         }
 
-        String tokenEmail = jwtProvider.getEmail(dto.getRefreshToken());
-        if (!member.getEmail().equals(tokenEmail)) {
-            throw new MemberException(MemberErrorCode.UNAUTHORIZED_ACCESS); // 권한 없음
-        }
+        // Refresh Token에서 이메일 추출
+        String tokenEmail = jwtProvider.getEmail(refreshToken);
 
+        // 해당 이메일의 회원 정보 가져오기
+        Member member = memberRepository.findByEmail(tokenEmail)
+                .orElseThrow(() -> new MemberException(MemberErrorCode.NOT_FOUND));
+
+        // 새로운 토큰 생성
         String newAccessToken = jwtProvider.createAccessToken(member);
         String newRefreshToken = jwtProvider.createRefreshToken(member);
 

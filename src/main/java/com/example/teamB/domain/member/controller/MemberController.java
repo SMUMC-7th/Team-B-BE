@@ -4,6 +4,8 @@ import com.example.teamB.domain.member.annotation.CurrentMember;
 import com.example.teamB.domain.member.dto.MemberRequestDTO;
 import com.example.teamB.domain.member.dto.MemberResponseDTO;
 import com.example.teamB.domain.member.entity.Member;
+import com.example.teamB.domain.member.exception.MemberErrorCode;
+import com.example.teamB.domain.member.exception.MemberException;
 import com.example.teamB.domain.member.service.command.MemberCommandService;
 import com.example.teamB.domain.member.service.query.MemberQueryService;
 import com.example.teamB.global.apiPayload.CustomResponse;
@@ -62,9 +64,17 @@ public class MemberController {
     @Operation(summary = "토큰 재발급", description = "리프레시 토큰을 사용하여 새로운 액세스 토큰을 발급받습니다.")
     @PostMapping("/token/reissue")
     public CustomResponse<MemberResponseDTO.MemberTokenDTO> refreshToken(
-            @CurrentMember Member member,
-            @RequestBody @Valid MemberRequestDTO.RefreshRequest dto) {
-        return CustomResponse.onSuccess(memberCommandService.refreshToken(member, dto));
+            @RequestHeader(value = "Refresh-Token", required = true) String refreshToken) {
+
+        // Refresh Token이 비어 있거나 잘못된 경우 처리
+        if (refreshToken == null || refreshToken.isBlank()) {
+            log.error("Refresh token is missing or invalid.");
+            throw new MemberException(MemberErrorCode.INVALID_TOKEN);
+        }
+
+        // 토큰 재발급
+        MemberResponseDTO.MemberTokenDTO tokenResponse = memberCommandService.refreshToken(refreshToken);
+        return CustomResponse.onSuccess(tokenResponse);
     }
 
     /** 회원 탈퇴 API */
