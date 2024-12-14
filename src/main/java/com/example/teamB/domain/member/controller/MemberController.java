@@ -39,7 +39,7 @@ public class MemberController {
      * 이메일 중복 확인 및 인증 메일 전송*/
     @Operation(summary = "1. 회원가입 요청 및 인증", description = "회원가입을 위해 이메일로 인증 코드를 전송합니다.")
     @Parameters({
-            @Parameter(name = "dto", description = "회원가입 요청을 위한 이메일 및 비밀번호 입력", required = true)
+            @Parameter(name = "dto", description = "회원가입 요청을 위한 이메일 및 비밀번호 입력")
     })
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "인증 메일 전송을 성공하였습니다.",
@@ -58,7 +58,7 @@ public class MemberController {
     /** 2단계: 인증 코드 검증 */
     @Operation(summary = "2. 회원가입 인증 코드 확인", description = "이메일로 전송된 인증 코드를 확인합니다.")
     @Parameters({
-            @Parameter(name = "dto", description = "인증 코드 확인을 위한 DTO", required = true)
+            @Parameter(name = "dto", description = "인증 코드 확인을 위한 DTO")
     })
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "인증 코드 확인에 성공하였습니다.",
@@ -77,7 +77,7 @@ public class MemberController {
     /** 3단계: 회원가입 완료 (+ 추가 정보 입력) */
     @Operation(summary = "3. 회원가입", description = "회원가입 시 추가 정보를 입력하고 계정을 생성합니다.")
     @Parameters({
-            @Parameter(name = "dto", description = "회원가입 완료를 위한 추가 정보 DTO", required = true)
+            @Parameter(name = "dto", description = "회원가입 완료를 위한 추가 정보 DTO")
     })
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "회원가입에 성공하였습니다.",
@@ -94,7 +94,7 @@ public class MemberController {
     /** 회원 로그인 API */
     @Operation(summary = "로그인", description = "회원 로그인 후 토큰을 발급받습니다.")
     @Parameters({
-            @Parameter(name = "dto", description = "로그인을 위한 이메일과 비밀번호 입력 DTO", required = true)
+            @Parameter(name = "dto", description = "로그인을 위한 이메일과 비밀번호 입력 DTO")
     })
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "로그인에 성공하였습니다.",
@@ -114,7 +114,7 @@ public class MemberController {
     /** 토큰 재발급 API */
     @Operation(summary = "토큰 재발급", description = "리프레시 토큰을 사용하여 새로운 액세스 토큰을 발급받습니다.")
     @Parameters({
-            @Parameter(name = "Refresh-Token", description = "리프레시 토큰", required = true, in = ParameterIn.HEADER)
+            @Parameter(name = "Refresh-Token", description = "리프레시 토큰")
     })
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "토큰 재발급에 성공하였습니다.",
@@ -168,7 +168,7 @@ public class MemberController {
     /** 비밀번호 변경 이메일 인증 */
     @Operation(summary = "2. 비밀번호 변경 인증", description = "이메일로 전송된 인증 코드를 확인합니다.")
     @Parameters({
-            @Parameter(name = "dto", description = "인증 코드 입력 DTO", required = true)
+            @Parameter(name = "dto", description = "인증 코드 입력 DTO")
     })
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "인증 코드 확인에 성공하였습니다.",
@@ -189,7 +189,7 @@ public class MemberController {
     /** 새 비밀번호 입력 */
     @Operation(summary = "3. 비밀번호 변경", description = "새로운 비밀번호를 설정합니다.")
     @Parameters({
-            @Parameter(name = "dto", description = "새 비밀번호 입력 DTO", required = true)
+            @Parameter(name = "dto", description = "새 비밀번호 입력 DTO")
     })
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "새 비밀번호 설정 성공하였습니다.",
@@ -208,7 +208,7 @@ public class MemberController {
     /** 닉네임 변경 */
     @Operation(summary = "닉네임 변경", description = "회원의 닉네임을 변경합니다.")
     @Parameters({
-            @Parameter(name = "dto", description = "새 닉네임 변경을 위한 DTO", required = true)
+            @Parameter(name = "dto", description = "새 닉네임 변경을 위한 DTO")
     })
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "닉네임 변경에 성공하였습니다.",
@@ -227,7 +227,7 @@ public class MemberController {
     /** 알람 설정 변경 */
     @Operation(summary = "알람 설정 변경", description = "회원의 알람 상태와 시간을 변경합니다.")
     @Parameters({
-            @Parameter(name = "dto", description = "알람 상태 및 시간을 설정하는 DTO", required = true)
+            @Parameter(name = "dto", description = "알람 상태 및 시간을 설정하는 DTO")
     })
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "알람 설정 변경 성공하였습니다.",
