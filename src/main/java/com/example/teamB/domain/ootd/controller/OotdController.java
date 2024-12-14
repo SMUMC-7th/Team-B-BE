@@ -12,7 +12,6 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -35,10 +34,10 @@ public class OotdController {
     @Operation(summary = "오늘의 OOTD 기록 등록", description = "사용자가 오늘의 OOTD 기록 등록, swagger로는 테스트가 불가 합니다. postman을 활용해 주세요!")
     @ApiResponses({
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMON200",description = "OK, 성공"),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "MEMBER404", description = "조회되는 멤버가 없습니다. 토큰을 확인해주세요",content = @Content(schema = @Schema(implementation = ApiResponse.class))),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "UPLOAD001", description = "파일 업로드에 실패했습니다. 등록하려는 파일을 확인해주세요",content = @Content(schema = @Schema(implementation = ApiResponse.class))),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "OOTD002", description = "적절한 날씨 분류를 찾지 못했습니다. 기온 입력정보를 다시 확인해주세요",content = @Content(schema = @Schema(implementation = ApiResponse.class))),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "HASHTAG001", description = "입력한 해시태그를 찾을 수 없습니다. 해시태그 이름을 확인해주세요",content = @Content(schema = @Schema(implementation = ApiResponse.class))),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "MEMBER404", description = "조회되는 멤버가 없습니다. 토큰을 확인해주세요",content = @Content(schema = @Schema(implementation = CustomResponse.class))),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "UPLOAD001", description = "파일 업로드에 실패했습니다. 등록하려는 파일을 확인해주세요",content = @Content(schema = @Schema(implementation = CustomResponse.class))),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "OOTD002", description = "적절한 날씨 분류를 찾지 못했습니다. 기온 입력정보를 다시 확인해주세요",content = @Content(schema = @Schema(implementation = CustomResponse.class))),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "HASHTAG001", description = "입력한 해시태그를 찾을 수 없습니다. 해시태그 이름을 확인해주세요",content = @Content(schema = @Schema(implementation = CustomResponse.class))),
     })
     public CustomResponse<?> createOotd(
             @CurrentMember Member member,
@@ -72,7 +71,7 @@ public class OotdController {
     })
     @ApiResponses({
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMON200",description = "OK, 성공"),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "OOTD002", description = "적절한 날씨 분류를 찾지 못했습니다. 기온 입력정보를 다시 확인해주세요",content = @Content(schema = @Schema(implementation = ApiResponse.class))),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "OOTD002", description = "적절한 날씨 분류를 찾지 못했습니다. 기온 입력정보를 다시 확인해주세요",content = @Content(schema = @Schema(implementation = CustomResponse.class))),
     })
     public CustomResponse<OotdResponseDTO.OotdInfoListDTO> getPastOotd(
             @CurrentMember Member member,
