@@ -6,6 +6,8 @@ import com.example.teamB.domain.hashtag.exception.HashtagErrorCode;
 import com.example.teamB.domain.hashtag.exception.HashtagException;
 import com.example.teamB.domain.hashtag.repository.HashtagRepository;
 import com.example.teamB.domain.member.entity.Member;
+import com.example.teamB.domain.member.exception.MemberErrorCode;
+import com.example.teamB.domain.member.exception.MemberException;
 import com.example.teamB.domain.member.repository.MemberRepository;
 import com.example.teamB.domain.ootd.dto.OotdRequestDTO;
 import com.example.teamB.domain.ootd.entity.Ootd;
@@ -36,7 +38,7 @@ public class OotdCommandServiceImpl implements OotdCommandService {
     public void createOotd(OotdRequestDTO.CreateOotdDTO dto, MultipartFile image, Long memberId) {
         // 멤버 확인
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new IllegalArgumentException("멤버를 찾지 못함"));
+                .orElseThrow(() -> new MemberException(MemberErrorCode.NOT_FOUND));
 
         // 이미지 업로드
         String storedImageUrl = uploadHandler.upload(image);
