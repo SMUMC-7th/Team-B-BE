@@ -23,11 +23,9 @@ public class CustomResponse<T> {
     private final T result;
 
 
-
     public static <T> CustomResponse<T> onSuccess(T result) {
         return new CustomResponse<>(HttpStatus.OK, String.valueOf(HttpStatus.OK.value()), HttpStatus.OK.getReasonPhrase(), true, result);
     }
-
 
     public static <T> CustomResponse<T> of(BaseSuccessCode code, T result) {
         return new CustomResponse<>(code.getStatus(), code.getCode(), code.getMessage(), true, result);
