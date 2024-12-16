@@ -59,7 +59,7 @@ public class PostController {
     }
 
     //게시물 단일 조회
-    @GetMapping("/{postId]")
+    @GetMapping("/{postId}")
     @Operation(summary = "게시물 단일 조회", description = "게시물 단일 조회하는 api")
     @ApiResponses({
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMON200",description = "OK, 성공"),
@@ -74,7 +74,7 @@ public class PostController {
     }
 
     //게시물 수정
-    @PatchMapping("/{postId]")
+    @PatchMapping("/{postId}")
     @Operation(summary = "게시물 수정", description = "게시물 수정하는 api")
     @ApiResponses({
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMON200",description = "OK, 성공"),
@@ -92,7 +92,7 @@ public class PostController {
     }
 
     //게시물 삭제
-    @DeleteMapping("/{postId]")
+    @DeleteMapping("/{postId}")
     @Operation(summary = "게시물 삭제", description = "게시물 삭제하는 api")
     @ApiResponses({
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMON200",description = "OK, 성공"),

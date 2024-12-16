@@ -1,4 +1,4 @@
-package com.example.teamB.domain.post.exception;
+package com.example.teamB.domain.comment.exception;
 
 import com.example.teamB.global.apiPayload.CustomResponse;
 import com.example.teamB.global.apiPayload.code.BaseErrorCode;
@@ -8,17 +8,10 @@ import org.springframework.http.HttpStatus;
 
 @AllArgsConstructor
 @Getter
-public enum PostErrorCode implements BaseErrorCode {
+public enum CommentErrorCode implements BaseErrorCode {
 
-    POST_REGISTRATION_FAILED(HttpStatus.BAD_REQUEST,
-            "POST001",
-            "게시물 등록에 실패하였습니다."),
-    UNAUTH_FAILED(HttpStatus.NOT_ACCEPTABLE,
-            "POST002",
-            "해당 게시물 작성자가 아닙니다."),
-    POST_NOT_FOUND(HttpStatus.NOT_FOUND,
-            "POST003",
-            "해당 게시글을 찾을 수 없습니다.");
+    COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "COMMENT001", "댓글를 찾을 수 없습니다."),
+    REPORT_FORBIDDEN(HttpStatus.FORBIDDEN, "COMMENT002", "댓글을 신고할 수 없습니다.");
 
     private final HttpStatus status;
     private final String code;
