@@ -16,12 +16,13 @@ public class CommentResponseDto {
     @NoArgsConstructor
     public static class CommentPreviewDTO {
         private Long id;
-        private String content;
+        private String content; // 항상 반환
         private Long parentId;
         private Long memberId;
         private String memberNickname;
         private int reportCount;
         private LocalDateTime createdAt;
+        private boolean isHidden; // 댓글 숨김여부
         private List<CommentPreviewDTO> children;
     }
 
@@ -33,6 +34,4 @@ public class CommentResponseDto {
         private List<CommentPreviewDTO> list;
         private Long lastId;
     }
-
-
 }

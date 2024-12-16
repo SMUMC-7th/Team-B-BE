@@ -70,4 +70,14 @@ public class Comment extends BaseEntity {
 	public void updateContent(@NotBlank(message = "수정된 댓글 내용은 필수입니다.") String content) {
 		this.content = content;
 	}
+
+	//신고 수 증가
+	public void increaseReportCount () {
+		this.reportCount++;
+	}
+
+	//댓글 숨김 여부 확인
+	public boolean isHidden() {
+		return this.reportCount >= 1; // 신고당해, 숨겨지는 댓글 기준값 설정
+	}
 }
