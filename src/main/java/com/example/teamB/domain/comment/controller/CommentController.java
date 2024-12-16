@@ -1,15 +1,11 @@
 package com.example.teamB.domain.comment.controller;
 
-import java.util.List;
-
-import com.example.teamB.domain.comment.dto.CommentResponseDTO;
+import com.example.teamB.domain.comment.dto.CommentResponseDto;
 import com.example.teamB.domain.comment.service.command.CommentCommandService;
 import com.example.teamB.domain.comment.service.query.CommentQueryService;
 import com.example.teamB.domain.member.annotation.CurrentMember;
 import com.example.teamB.domain.member.entity.Member;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -40,12 +36,12 @@ public class CommentController {
 	@ApiResponses({
 			@io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMON200",description = "OK, 성공"),
 	})
-	public CustomResponse<CommentResponseDTO.CommentPreviewDTO> createComment (
+	public CustomResponse<CommentResponseDto.CommentPreviewDTO> createComment (
 			@CurrentMember Member member,
 			@PathVariable Long postId,
 			@Valid @RequestBody CommentCreateRequestDto request) {
 
-		CommentResponseDTO.CommentPreviewDTO response = commentCommandService.createComment(request, member, postId);
+		CommentResponseDto.CommentPreviewDTO response = commentCommandService.createComment(request, member, postId);
 
 		return CustomResponse.onSuccess(response);
 	}
@@ -55,12 +51,12 @@ public class CommentController {
 			@io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMON200",description = "OK, 성공"),
 	})
 	@PostMapping("/{commentId}")
-	public CustomResponse<CommentResponseDTO.CommentPreviewDTO > updateComment (
+	public CustomResponse<CommentResponseDto.CommentPreviewDTO > updateComment (
 			@CurrentMember Member member,
 			@PathVariable Long commentId,
 			@Valid @RequestBody CommentUpdateRequestDto request) {
 
-		CommentResponseDTO.CommentPreviewDTO response = commentCommandService.updateComment(commentId, request, member.getId());
+		CommentResponseDto.CommentPreviewDTO response = commentCommandService.updateComment(commentId, request, member.getId());
 
 		return CustomResponse.onSuccess(response);
 	}
@@ -84,12 +80,12 @@ public class CommentController {
 			@io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMON200",description = "OK, 성공"),
 	})
 	@GetMapping
-	public CustomResponse<CommentResponseDTO.CommentPreviewListDTO> getComments(
+	public CustomResponse<CommentResponseDto.CommentPreviewListDTO> getComments(
 		@PathVariable Long postId,
 		@RequestParam(required = false) Long cursor,
 		@RequestParam(defaultValue = "10") int size) {
 
-		CommentResponseDTO.CommentPreviewListDTO responses = commentQueryService.getComments(postId, cursor, size);
+		CommentResponseDto.CommentPreviewListDTO responses = commentQueryService.getComments(postId, cursor, size);
 
 		return CustomResponse.onSuccess(responses);
 	}
