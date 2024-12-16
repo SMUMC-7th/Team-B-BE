@@ -43,6 +43,7 @@ public class SecurityConfig {
             "/api/users/signup",
             "/api/users/login",
             "/api/users/token/reissue",
+            "/api/auth/kakao", // 카카오 로그인 엔드포인트
             "/oauth2/callback/**"
     };
 
@@ -56,6 +57,12 @@ public class SecurityConfig {
 
                 // JWT 필터를 UsernamePasswordAuthenticationFilter 앞에 추가하여 인증 절차 진행
                 .addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class)
+
+                // OAuth2 로그인 설정
+                .oauth2Login(oauth2 -> oauth2
+                        .authorizationEndpoint(auth -> auth.baseUri("/oauth2/callback")) // 리다이렉트 경로 설정
+                        .defaultSuccessUrl("/api/auth/kakao/success", true) // 로그인 성공 후 URL
+                )
 
                 // 기본 폼 로그인 기능을 비활성화
                 .formLogin(AbstractHttpConfigurer::disable)
