@@ -43,7 +43,8 @@ public class OotdController {
             @CurrentMember Member member,
             @RequestPart MultipartFile image,
             @RequestPart OotdRequestDTO.CreateOotdDTO dto) {
-        ootdCommandService.createOotd(dto, image, member.getId());
+        dto.validateHashtags();
+        ootdCommandService.createOotd(dto, image, member);
         return CustomResponse.onSuccess(null);
     }
 
