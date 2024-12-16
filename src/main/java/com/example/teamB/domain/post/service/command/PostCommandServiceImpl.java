@@ -11,11 +11,12 @@ import com.example.teamB.domain.post.exception.PostErrorCode;
 import com.example.teamB.domain.post.exception.PostException;
 import com.example.teamB.domain.post.respository.PostRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Service
-@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class PostCommandServiceImpl implements PostCommandService {
 
