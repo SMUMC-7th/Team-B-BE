@@ -10,4 +10,5 @@ public interface CommentCommandService {
     CommentResponseDTO.CommentPreviewDTO createComment(CommentCreateRequestDto request, Member member, Long postId);
     CommentResponseDTO.CommentPreviewDTO updateComment(Long commentId, CommentUpdateRequestDto request, Long memberId);
     void deleteComment(Long commentId, Long memberId);
+    void reportComment(Long commentId, Long memberId);
 }

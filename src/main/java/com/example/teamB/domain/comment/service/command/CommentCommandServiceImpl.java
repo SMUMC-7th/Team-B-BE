@@ -12,6 +12,8 @@ import com.example.teamB.domain.post.repository.PostRepository;
 import com.example.teamB.global.apiPayload.code.GeneralErrorCode;
 import com.example.teamB.global.apiPayload.exception.CustomException;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -58,4 +60,17 @@ public class CommentCommandServiceImpl implements CommentCommandService {
         commentRepository.delete(comment);
     }
 
+    // 댓글 신고
+    @Override
+    public void reportComment(Long commentId, Long memberId) {
+        Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new CustomException(GeneralErrorCode.NOT_FOUND_404));
+
+        // 작성자가 본인의 댓글을 신고할 수 없도록 처리함
+        if(comment.getMember().getId().equals(memberId)) {
+            throw new CustomException(GeneralErrorCode.FORBIDDEN_403);
+        }
+
+        //신고 수 증가
+        comment.increaseReportCount();
+    }
 }

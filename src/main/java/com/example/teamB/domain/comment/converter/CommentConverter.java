@@ -16,12 +16,13 @@ public class CommentConverter {
     public CommentResponseDTO.CommentPreviewDTO toCommentPreviewDTO(Comment comment, List<CommentResponseDTO.CommentPreviewDTO> childResponses) {
         return CommentResponseDTO.CommentPreviewDTO.builder()
                 .id(comment.getId())
-                .content(comment.getContent())
+                .content(comment.isHidden() ? null : comment.getContent()) // 숨겨진 댓글의 내용은 null
                 .parentId(comment.getParent() != null ? comment.getParent().getId() : null)
                 .memberId(comment.getMember().getId())
                 .memberNickname(comment.getMember().getNickname())
                 .reportCount(comment.getReportCount())
                 .createdAt(comment.getCreatedAt())
+                .isHidden(comment.isHidden()) // 숨김 여부 추가
                 .children(childResponses)
                 .build();
     }
@@ -32,6 +33,4 @@ public class CommentConverter {
                 .lastId(childResponses.isEmpty() ? 0L : childResponses.get(childResponses.size() - 1).getId())
                 .build();
     }
-
-
 }

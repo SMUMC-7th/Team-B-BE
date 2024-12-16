@@ -22,6 +22,7 @@ public class CommentResponseDTO {
         private String memberNickname;
         private int reportCount;
         private LocalDateTime createdAt;
+        private boolean isHidden; // 댓글 숨김여부
         private List<CommentPreviewDTO> children;
     }
 
@@ -33,6 +34,4 @@ public class CommentResponseDTO {
         private List<CommentPreviewDTO> list;
         private Long lastId;
     }
-
-
 }

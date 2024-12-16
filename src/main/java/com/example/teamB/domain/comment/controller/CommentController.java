@@ -94,4 +94,16 @@ public class CommentController {
 		return CustomResponse.onSuccess(responses);
 	}
 
+	@Operation(summary = "댓글 신고 API", description = "댓글을 신고하는 API 입니다.")
+	@ApiResponses({
+		@io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMON200", description = "OK, 성공")
+	})
+	@PostMapping("/{commentId}/report")
+	public CustomResponse<Void> reportComment (
+		@CurrentMember Member member,
+		@PathVariable Long commentId) {
+
+		commentCommandService.reportComment(commentId, member.getId());
+		return CustomResponse.onSuccess(null);
+	}
 }
