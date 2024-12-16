@@ -37,7 +37,7 @@ public class PostController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMON200",description = "OK, 성공"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "MEMBER404", description = "조회되는 멤버가 없습니다. 토큰을 확인해주세요",content = @Content(schema = @Schema(implementation = CustomResponse.class))),
     })
-    public CustomResponse<?> createPost(
+    public CustomResponse<Long> createPost(
             @CurrentMember Member member,
             @RequestBody PostRequestDTO.CreatePostDTO request) {
         Long postId=postCommandService.createPost(request, member.getId());
