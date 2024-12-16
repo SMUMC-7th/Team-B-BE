@@ -7,5 +7,7 @@ import lombok.Getter;
 @Builder
 public class KakaoAuthResponseDTO {
     private boolean success;
-    private String message;
+    private String accessToken; // JWT Access Token
+    private String refreshToken; // JWT Refresh Token
+    private String message; // 성공 메시지
 }

@@ -2,7 +2,9 @@ package com.example.teamB.domain.auth.service;
 
 import com.example.teamB.domain.auth.dto.KakaoAuthResponseDTO;
 import com.example.teamB.domain.member.entity.Member;
+import com.example.teamB.domain.member.enums.MemberStatus;
 import com.example.teamB.domain.member.repository.MemberRepository;
+import com.example.teamB.global.jwt.util.JwtProvider;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,6 +17,7 @@ public class KakaoAuthService {
 
     private final MemberRepository memberRepository;
     private final RestTemplate restTemplate;
+    private final JwtProvider jwtProvider;
 
     private final String KAKAO_USER_INFO_URI = "https://kapi.kakao.com/v2/user/me";
 
@@ -34,12 +37,19 @@ public class KakaoAuthService {
                         .kakaoId(kakaoId)
                         .nickname(nickname)
                         .profileImageUrl(profileImageUrl)
+                        .status(MemberStatus.ACTIVE)
                         .build()));
 
-        // 4. 성공 응답 반환
+        // 4. JWT 토큰 생성
+        String accessJwt = jwtProvider.createAccessToken(member);
+        String refreshJwt = jwtProvider.createRefreshToken(member);
+
+        // 5. 성공 응답 반환
         return KakaoAuthResponseDTO.builder()
                 .success(true)
-                .message("카카오 인증 및 사용자 정보 저장 완료")
+                .accessToken(accessJwt)
+                .refreshToken(refreshJwt)
+                .message("카카오 로그인 및 사용자 정보 처리 완료")
                 .build();
     }
 
