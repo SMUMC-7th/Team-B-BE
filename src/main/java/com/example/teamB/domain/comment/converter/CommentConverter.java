@@ -20,6 +20,7 @@ public class CommentConverter {
                 .parentId(comment.getParent() != null ? comment.getParent().getId() : null)
                 .memberId(comment.getMember().getId())
                 .memberNickname(comment.getMember().getNickname())
+                .reportCount(comment.getReportCount())
                 .createdAt(comment.getCreatedAt())
                 .children(childResponses)
                 .build();

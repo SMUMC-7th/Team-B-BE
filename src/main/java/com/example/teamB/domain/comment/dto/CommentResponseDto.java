@@ -20,6 +20,7 @@ public class CommentResponseDTO {
         private Long parentId;
         private Long memberId;
         private String memberNickname;
+        private int reportCount;
         private LocalDateTime createdAt;
         private List<CommentPreviewDTO> children;
     }
