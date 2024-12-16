@@ -33,10 +33,10 @@ public class Member extends BaseEntity {
     @Column(length = 100)
     public String password; // 비밀번호는 nullable로 설정 (소셜 로그인 시 필요 없을 수 있음)
 
-    @Column(nullable = false, length = 20)
+    @Column(length = 20)
     public String name;
 
-    @Column(nullable = false, length = 20)
+    @Column(length = 20)
     public String nickname;
 
     @Enumerated(EnumType.STRING)
