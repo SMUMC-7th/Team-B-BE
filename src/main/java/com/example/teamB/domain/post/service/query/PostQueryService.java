@@ -5,4 +5,5 @@ import org.springframework.data.domain.Page;
 
 public interface PostQueryService {
     Page<Post> getPostList(Integer page);
+    Post getPost(Long postId);
 }
