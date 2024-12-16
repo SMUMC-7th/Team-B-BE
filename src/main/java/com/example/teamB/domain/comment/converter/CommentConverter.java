@@ -1,6 +1,6 @@
 package com.example.teamB.domain.comment.converter;
 
-import com.example.teamB.domain.comment.dto.CommentResponseDTO;
+import com.example.teamB.domain.comment.dto.CommentResponseDto;
 import org.springframework.stereotype.Component;
 
 import com.example.teamB.domain.comment.entity.Comment;
@@ -13,8 +13,8 @@ import java.util.List;
 @Component
 public class CommentConverter {
 
-    public CommentResponseDTO.CommentPreviewDTO toCommentPreviewDTO(Comment comment, List<CommentResponseDTO.CommentPreviewDTO> childResponses) {
-        return CommentResponseDTO.CommentPreviewDTO.builder()
+    public CommentResponseDto.CommentPreviewDTO toCommentPreviewDTO(Comment comment, List<CommentResponseDto.CommentPreviewDTO> childResponses) {
+        return CommentResponseDto.CommentPreviewDTO.builder()
                 .id(comment.getId())
                 .content(comment.getContent())
                 .parentId(comment.getParent() != null ? comment.getParent().getId() : null)
@@ -26,8 +26,8 @@ public class CommentConverter {
                 .build();
     }
 
-    public CommentResponseDTO.CommentPreviewListDTO toCommentPreviewListDTO(List<CommentResponseDTO.CommentPreviewDTO> childResponses) {
-        return CommentResponseDTO.CommentPreviewListDTO.builder()
+    public CommentResponseDto.CommentPreviewListDTO toCommentPreviewListDTO(List<CommentResponseDto.CommentPreviewDTO> childResponses) {
+        return CommentResponseDto.CommentPreviewListDTO.builder()
                 .list(childResponses)
                 .lastId(childResponses.isEmpty() ? 0L : childResponses.get(childResponses.size() - 1).getId())
                 .build();
