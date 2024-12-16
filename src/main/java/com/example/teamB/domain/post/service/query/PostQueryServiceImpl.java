@@ -1,8 +1,11 @@
 package com.example.teamB.domain.post.service.query;
 
 import com.example.teamB.domain.member.entity.Member;
+import com.example.teamB.domain.member.exception.MemberErrorCode;
 import com.example.teamB.domain.member.repository.MemberRepository;
 import com.example.teamB.domain.post.entity.Post;
+import com.example.teamB.domain.post.exception.PostErrorCode;
+import com.example.teamB.domain.post.exception.PostException;
 import com.example.teamB.domain.post.respository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -24,5 +27,12 @@ public class PostQueryServiceImpl implements PostQueryService {
         PageRequest pageRequest = PageRequest.of(page, 10, Sort.by(Sort.Direction.ASC, "id"));
         return postRepository.findAll(pageRequest);
     }
+
+    @Override
+    public Post getPost(Long postId) {
+        return postRepository.findById(postId)
+                .orElseThrow(() -> new PostException(PostErrorCode.POST_REGISTRATION_FAILED));
+    }
+
 
 }

@@ -39,9 +39,9 @@ public class PostController {
     })
     public CustomResponse<?> createPost(
             @CurrentMember Member member,
-            @RequestPart PostRequestDTO.CreatePostDTO dto) {
-        postCommandService.createPost(dto, member.getId());
-        return CustomResponse.onSuccess(null);
+            @RequestBody PostRequestDTO.CreatePostDTO request) {
+        Long postId=postCommandService.createPost(request, member.getId());
+        return CustomResponse.onSuccess(postId);
     }
 
     //게시물 전체 조회
@@ -53,60 +53,58 @@ public class PostController {
     })
     public CustomResponse<?> getPostList(
             @RequestParam(name = "page") Integer page) {
+        page-=1;
         Page<Post> postList=postQueryService.getPostList(page);
         return CustomResponse.onSuccess(PostConverter.postPreViewListDTO(postList));
     }
 
     //게시물 단일 조회
-//    @GetMapping("/{postId]")
-//    @Operation(summary = "게시물 단일 조회", description = "게시물 단일 조회하는 api")
-//    @ApiResponses({
-//            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMON200",description = "OK, 성공"),
-//            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "POST002", description = "해당 게시물이 존재하지 않습니다.",content = @Content(schema = @Schema(implementation = CustomResponse.class))),
-//    })
-//    @Parameters({
-//            @Parameter(name = "postId", description = "게시물 아이디, path variable 입니다")
-//    })
-//    public CustomResponse<?> getPost(
-//            @PathVariable(name = "postId") Long postId) {
-//        Post post=postQueryService.getPost(postId);
-//        return CustomResponse.onSuccess(post);
-//    }
-//
-//    //게시물 수정
-//    @PatchMapping("/{postId]")
-//    @Operation(summary = "게시물 수정", description = "게시물 수정하는 api")
-//    @ApiResponses({
-//            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMON200",description = "OK, 성공"),
-//            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "POST002", description = "해당 게시물이 존재하지 않습니다.",content = @Content(schema = @Schema(implementation = CustomResponse.class))),
-//    })
-//    @Parameters({
-//            @Parameter(name = "postId", description = "게시물 아이디, path variable 입니다")
-//    })
-//    public CustomResponse<?> patchPost(
-//            @CurrentMember Member member,
-//            @PathVariable(name = "postId") Long postId,
-//            @RequestPart PostRequestDTO.CreatePostDTO dto
-//    ) {
-//        postCommandService.createPost(dto, member.getId());
-//        return CustomResponse.onSuccess(null);
-//    }
-//
-//    //게시물 삭제
-//    @DeleteMapping("/{postId]")
-//    @Operation(summary = "게시물 삭제", description = "게시물 삭제하는 api")
-//    @ApiResponses({
-//            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMON200",description = "OK, 성공"),
-//            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "POST002", description = "해당 게시물이 존재하지 않습니다.",content = @Content(schema = @Schema(implementation = CustomResponse.class))),
-//    })
-//    @Parameters({
-//            @Parameter(name = "postId", description = "게시물 아이디, path variable 입니다")
-//    })
-//    public CustomResponse<?> deletePost(
-//            @CurrentMember Member member,
-//            @PathVariable(name = "postId") Long postId,
-//            @RequestPart PostRequestDTO.CreatePostDTO dto) {
-//        postCommandService.createPost(dto, member.getId());
-//        return CustomResponse.onSuccess(null);
-//    }
+    @GetMapping("/{postId]")
+    @Operation(summary = "게시물 단일 조회", description = "게시물 단일 조회하는 api")
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMON200",description = "OK, 성공"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "POST002", description = "해당 게시물이 존재하지 않습니다.",content = @Content(schema = @Schema(implementation = CustomResponse.class))),
+    })
+    @Parameters({
+            @Parameter(name = "postId", description = "게시물 아이디, path variable 입니다")
+    })
+    public CustomResponse<?> getPost(@PathVariable Long postId) {
+        Post post = postQueryService.getPost(postId);
+        return CustomResponse.onSuccess(post);
+    }
+
+    //게시물 수정
+    @PatchMapping("/{postId]")
+    @Operation(summary = "게시물 수정", description = "게시물 수정하는 api")
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMON200",description = "OK, 성공"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "POST002", description = "해당 게시물이 존재하지 않습니다.",content = @Content(schema = @Schema(implementation = CustomResponse.class))),
+    })
+    @Parameters({
+            @Parameter(name = "postId", description = "게시물 아이디, path variable 입니다")
+    })
+    public CustomResponse<?> patchPost(
+            @CurrentMember Member member,
+            @PathVariable Long postId,
+            @RequestPart PostRequestDTO.CreatePostDTO dto) {
+        postCommandService.updatePost(dto, member.getId(),postId);
+        return CustomResponse.onSuccess(null);
+    }
+
+    //게시물 삭제
+    @DeleteMapping("/{postId]")
+    @Operation(summary = "게시물 삭제", description = "게시물 삭제하는 api")
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMON200",description = "OK, 성공"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "POST002", description = "해당 게시물이 존재하지 않습니다.",content = @Content(schema = @Schema(implementation = CustomResponse.class))),
+    })
+    @Parameters({
+            @Parameter(name = "postId", description = "게시물 아이디, path variable 입니다")
+    })
+    public CustomResponse<?> deletePost(
+            @CurrentMember Member member,
+            @PathVariable Long postId) {
+        postCommandService.deletePost(postId, member.getId());
+        return CustomResponse.onSuccess(null);
+    }
 }

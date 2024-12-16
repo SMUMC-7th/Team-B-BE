@@ -12,7 +12,10 @@ public enum PostErrorCode implements BaseErrorCode {
 
     POST_REGISTRATION_FAILED(HttpStatus.BAD_REQUEST,
             "POST001",
-            "게시물 등록에 실패하였습니다.");
+            "게시물 등록에 실패하였습니다."),
+    UNAUTH_FAILED(HttpStatus.NOT_ACCEPTABLE,
+            "POST002",
+            "해당 게시물 작성자가 아닙니다.");
 
     private final HttpStatus status;
     private final String code;
