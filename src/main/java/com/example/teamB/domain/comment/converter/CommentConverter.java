@@ -16,13 +16,13 @@ public class CommentConverter {
     public CommentResponseDTO.CommentPreviewDTO toCommentPreviewDTO(Comment comment, List<CommentResponseDTO.CommentPreviewDTO> childResponses) {
         return CommentResponseDTO.CommentPreviewDTO.builder()
                 .id(comment.getId())
-                .content(comment.isHidden() ? null : comment.getContent()) // 숨겨진 댓글의 내용은 null
+                .content(comment.getContent()) // 내용은 항상 반환
                 .parentId(comment.getParent() != null ? comment.getParent().getId() : null)
                 .memberId(comment.getMember().getId())
                 .memberNickname(comment.getMember().getNickname())
                 .reportCount(comment.getReportCount())
                 .createdAt(comment.getCreatedAt())
-                .isHidden(comment.isHidden()) // 숨김 여부 추가
+                .isHidden(comment.isHidden()) // 숨김 여부를 프런트에서 판단해서 해당 내용을 가림
                 .children(childResponses)
                 .build();
     }

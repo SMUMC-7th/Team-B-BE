@@ -16,7 +16,7 @@ public class CommentResponseDTO {
     @NoArgsConstructor
     public static class CommentPreviewDTO {
         private Long id;
-        private String content;
+        private String content; // 항상 반환
         private Long parentId;
         private Long memberId;
         private String memberNickname;
