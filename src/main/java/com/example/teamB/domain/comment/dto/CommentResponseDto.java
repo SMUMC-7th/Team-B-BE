@@ -1,39 +1,37 @@
 package com.example.teamB.domain.comment.dto;
 
-import java.time.LocalDateTime;
-
-import com.example.teamB.domain.comment.entity.Comment;
-
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-/**
- * 댓글 응답 DTO
- */
-@Getter
-public class CommentResponseDto {
-	private Long id;
+import java.time.LocalDateTime;
+import java.util.List;
 
-	private String content;
+public class CommentResponseDTO {
 
-	private Long parentId;
+    @Getter
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class CommentPreviewDTO {
+        private Long id;
+        private String content;
+        private Long parentId;
+        private Long memberId;
+        private String memberNickname;
+        private LocalDateTime createdAt;
+        private List<CommentPreviewDTO> children;
+    }
 
-	private Long memberId;
+    @Getter
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class CommentPreviewListDTO {
+        private List<CommentPreviewDTO> list;
+        private Long lastId;
+    }
 
-	private String memberNickname;
 
-	private LocalDateTime createdAt;
-
-	public CommentResponseDto(Comment comment) {
-		this.id = comment.getId();
-
-		this.content = comment.getContent();
-
-		this.parentId = comment.getParent() != null ? comment.getParent().getId() : null;
-
-		this.memberId = comment.getMember().getId();
-
-		this.memberNickname = comment.getMember().getNickname();
-
-		this.createdAt = comment.getCreatedAt();
-	}
 }

@@ -1,12 +1,11 @@
 package com.example.teamB.domain.comment.converter;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
+import com.example.teamB.domain.comment.dto.CommentResponseDTO;
 import org.springframework.stereotype.Component;
 
-import com.example.teamB.domain.comment.dto.CommentResponseDto;
 import com.example.teamB.domain.comment.entity.Comment;
+
+import java.util.List;
 
 /**
  * Comment 엔티티와 DTO 간 변환기
@@ -14,13 +13,24 @@ import com.example.teamB.domain.comment.entity.Comment;
 @Component
 public class CommentConverter {
 
-    public CommentResponseDto toResponse(Comment comment) {
-        return new CommentResponseDto(comment);
+    public CommentResponseDTO.CommentPreviewDTO toCommentPreviewDTO(Comment comment, List<CommentResponseDTO.CommentPreviewDTO> childResponses) {
+        return CommentResponseDTO.CommentPreviewDTO.builder()
+                .id(comment.getId())
+                .content(comment.getContent())
+                .parentId(comment.getParent() != null ? comment.getParent().getId() : null)
+                .memberId(comment.getMember().getId())
+                .memberNickname(comment.getMember().getNickname())
+                .createdAt(comment.getCreatedAt())
+                .children(childResponses)
+                .build();
     }
 
-    public List<CommentResponseDto> toResponseList(List<Comment> comments) {
-        return comments.stream()
-                .map(this::toResponse)
-                .collect(Collectors.toList());
+    public CommentResponseDTO.CommentPreviewListDTO toCommentPreviewListDTO(List<CommentResponseDTO.CommentPreviewDTO> childResponses) {
+        return CommentResponseDTO.CommentPreviewListDTO.builder()
+                .list(childResponses)
+                .lastId(childResponses.isEmpty() ? 0L : childResponses.get(childResponses.size() - 1).getId())
+                .build();
     }
+
+
 }
