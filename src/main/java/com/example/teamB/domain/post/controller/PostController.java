@@ -70,7 +70,7 @@ public class PostController {
     })
     public CustomResponse<?> getPost(@PathVariable Long postId) {
         Post post = postQueryService.getPost(postId);
-        return CustomResponse.onSuccess(post);
+        return CustomResponse.onSuccess(PostConverter.postPreViewDTO(post));
     }
 
     //게시물 수정
@@ -86,9 +86,9 @@ public class PostController {
     public CustomResponse<?> patchPost(
             @CurrentMember Member member,
             @PathVariable Long postId,
-            @RequestPart PostRequestDTO.CreatePostDTO dto) {
-        postCommandService.updatePost(dto, member.getId(),postId);
-        return CustomResponse.onSuccess(null);
+            @RequestBody PostRequestDTO.UpdatePostDTO dto) {
+        Post post=postCommandService.updatePost(dto, member.getId(),postId);
+        return CustomResponse.onSuccess(PostConverter.postPreViewDTO(post));
     }
 
     //게시물 삭제
@@ -105,6 +105,6 @@ public class PostController {
             @CurrentMember Member member,
             @PathVariable Long postId) {
         postCommandService.deletePost(postId, member.getId());
-        return CustomResponse.onSuccess(null);
+        return CustomResponse.onSuccess(postId);
     }
 }

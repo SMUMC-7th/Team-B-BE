@@ -6,6 +6,7 @@ import com.example.teamB.domain.member.exception.MemberErrorCode;
 import com.example.teamB.domain.member.exception.MemberException;
 import com.example.teamB.domain.member.repository.MemberRepository;
 import com.example.teamB.domain.post.dto.PostRequestDTO;
+import com.example.teamB.domain.post.dto.PostResponseDTO;
 import com.example.teamB.domain.post.entity.Post;
 import com.example.teamB.domain.post.exception.PostErrorCode;
 import com.example.teamB.domain.post.exception.PostException;
@@ -43,7 +44,7 @@ public class PostCommandServiceImpl implements PostCommandService {
     }
 
     @Override
-    public void updatePost(PostRequestDTO.CreatePostDTO dto, Long memberId, Long postId) {
+    public Post updatePost(PostRequestDTO.UpdatePostDTO dto, Long memberId, Long postId) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new PostException(PostErrorCode.POST_REGISTRATION_FAILED));
         if (!post.getMember().getId().equals(memberId)) {
@@ -52,6 +53,7 @@ public class PostCommandServiceImpl implements PostCommandService {
 
         post.update(dto.getTitle(), dto.getContent());
         postRepository.save(post);
+        return post;
     }
 
     @Override
