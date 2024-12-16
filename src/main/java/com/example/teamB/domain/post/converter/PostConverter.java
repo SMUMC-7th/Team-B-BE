@@ -15,6 +15,7 @@ public class PostConverter {
         }
         return PostResponseDTO.PostPreViewDTO.builder()
                 .memberName(post.getMember().getName())
+                .postId(post.getId())
                 .title(post.getTitle())
                 .content(post.getContent())
                 .build();

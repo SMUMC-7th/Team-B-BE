@@ -25,6 +25,7 @@ public class PostResponseDTO {
     @AllArgsConstructor
     public static class PostPreViewDTO {
         String memberName;
+        Long postId;
         String title;
         String content;
     }
