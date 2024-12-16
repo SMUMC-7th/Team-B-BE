@@ -1,6 +1,6 @@
 package com.example.teamB.domain.comment.controller;
 
-import com.example.teamB.domain.comment.dto.CommentResponseDto;
+import com.example.teamB.domain.comment.dto.CommentResponseDTO;
 import com.example.teamB.domain.comment.service.command.CommentCommandService;
 import com.example.teamB.domain.comment.service.query.CommentQueryService;
 import com.example.teamB.domain.member.annotation.CurrentMember;
@@ -36,12 +36,12 @@ public class CommentController {
 	@ApiResponses({
 			@io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMON200",description = "OK, 성공"),
 	})
-	public CustomResponse<CommentResponseDto.CommentPreviewDTO> createComment (
+	public CustomResponse<CommentResponseDTO.CommentPreviewDTO> createComment (
 			@CurrentMember Member member,
 			@PathVariable Long postId,
 			@Valid @RequestBody CommentCreateRequestDto request) {
 
-		CommentResponseDto.CommentPreviewDTO response = commentCommandService.createComment(request, member, postId);
+		CommentResponseDTO.CommentPreviewDTO response = commentCommandService.createComment(request, member, postId);
 
 		return CustomResponse.onSuccess(response);
 	}
@@ -51,12 +51,12 @@ public class CommentController {
 			@io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMON200",description = "OK, 성공"),
 	})
 	@PostMapping("/{commentId}")
-	public CustomResponse<CommentResponseDto.CommentPreviewDTO > updateComment (
+	public CustomResponse<CommentResponseDTO.CommentPreviewDTO > updateComment (
 			@CurrentMember Member member,
 			@PathVariable Long commentId,
 			@Valid @RequestBody CommentUpdateRequestDto request) {
 
-		CommentResponseDto.CommentPreviewDTO response = commentCommandService.updateComment(commentId, request, member.getId());
+		CommentResponseDTO.CommentPreviewDTO response = commentCommandService.updateComment(commentId, request, member.getId());
 
 		return CustomResponse.onSuccess(response);
 	}
@@ -80,12 +80,12 @@ public class CommentController {
 			@io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMON200",description = "OK, 성공"),
 	})
 	@GetMapping
-	public CustomResponse<CommentResponseDto.CommentPreviewListDTO> getComments(
+	public CustomResponse<CommentResponseDTO.CommentPreviewListDTO> getComments(
 		@PathVariable Long postId,
 		@RequestParam(required = false) Long cursor,
 		@RequestParam(defaultValue = "10") int size) {
 
-		CommentResponseDto.CommentPreviewListDTO responses = commentQueryService.getComments(postId, cursor, size);
+		CommentResponseDTO.CommentPreviewListDTO responses = commentQueryService.getComments(postId, cursor, size);
 
 		return CustomResponse.onSuccess(responses);
 	}
