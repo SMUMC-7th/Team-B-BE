@@ -35,11 +35,7 @@ public class OotdCommandServiceImpl implements OotdCommandService {
     private final OotdRepository ootdRepository;
 
     @Override
-    public void createOotd(OotdRequestDTO.CreateOotdDTO dto, MultipartFile image, Long memberId) {
-        // 멤버 확인
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new MemberException(MemberErrorCode.NOT_FOUND));
-
+    public void createOotd(OotdRequestDTO.CreateOotdDTO dto, MultipartFile image, Member member) {
         // 이미지 업로드
         String storedImageUrl = uploadHandler.upload(image);
 
@@ -56,6 +52,11 @@ public class OotdCommandServiceImpl implements OotdCommandService {
                 .weatherDescription(weatherClassification.getWeatherDescription())
                 .ootdHashtags(new ArrayList<>())
                 .build();
+
+        // 10도 이상 기운이 차이나는 경우에 일교차 주의 해시태그 추가
+        if (Math.abs(dto.getMaxTemperature() - dto.getMinTemperature()) >= 10) {
+            dto.getHashtags().add("VARIATION");
+        }
 
         // 해시태그 연결
         for (String hashtag : dto.getHashtags()) {

@@ -15,7 +15,10 @@ public enum OotdErrorCode implements BaseErrorCode {
             "OOTD 등록에 실패하였습니다."),
     WEATHER_SEARCH_FAILED(HttpStatus.BAD_REQUEST,
             "OOTD002",
-            "날씨 분류 검색에 실패하였습니다.");
+            "날씨 분류 검색에 실패하였습니다."),
+    HASHTAG_LIMIT_EXCEEDED(HttpStatus.BAD_REQUEST,
+            "OOTD003",
+            "해시태그는 최대 3개까지 입력 가능합니다.");
 
     private final HttpStatus status;
     private final String code;

@@ -22,7 +22,8 @@ public enum HashtagCategory {
     BEANIE("비니"),
     SLEEVELESS("나시"),
     SANDALS("샌들"),
-    SUNGLASSES("선글라스");
+    SUNGLASSES("선글라스"),
+    VARIATION("일교차 주의");
 
     private final String koreanName;
 
