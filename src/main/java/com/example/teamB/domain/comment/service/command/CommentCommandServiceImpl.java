@@ -8,7 +8,7 @@ import com.example.teamB.domain.comment.entity.Comment;
 import com.example.teamB.domain.comment.repository.CommentRepository;
 import com.example.teamB.domain.member.entity.Member;
 import com.example.teamB.domain.post.entity.Post;
-import com.example.teamB.domain.post.repository.PostRepository;
+import com.example.teamB.domain.post.respository.PostRepository;
 import com.example.teamB.global.apiPayload.code.GeneralErrorCode;
 import com.example.teamB.global.apiPayload.exception.CustomException;
 import lombok.RequiredArgsConstructor;

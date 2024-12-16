@@ -20,7 +20,7 @@ public class PostQueryServiceImpl implements PostQueryService {
 
     @Override
     public Page<Post> getPostList(Integer page) {
-        Page<Post> PostPage = postRepository.findAllById(PageRequest.of(page, 10));
+        Page<Post> PostPage = postRepository.findAll(PageRequest.of(page, 10));
         return PostPage;
     }
 
