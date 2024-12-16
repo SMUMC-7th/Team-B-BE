@@ -7,6 +7,7 @@ import com.example.teamB.domain.post.respository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,8 +21,8 @@ public class PostQueryServiceImpl implements PostQueryService {
 
     @Override
     public Page<Post> getPostList(Integer page) {
-        Page<Post> PostPage = postRepository.findAllById(PageRequest.of(page, 10));
-        return PostPage;
+        PageRequest pageRequest = PageRequest.of(page, 10, Sort.by(Sort.Direction.ASC, "id"));
+        return postRepository.findAll(pageRequest);
     }
 
 }
