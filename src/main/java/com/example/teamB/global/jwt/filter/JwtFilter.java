@@ -37,7 +37,6 @@ public class JwtFilter extends OncePerRequestFilter {
             "/api/users/token/reissue"
     };
 
-
     // JWT 검증 및 인증 로직 구현 메서드
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {

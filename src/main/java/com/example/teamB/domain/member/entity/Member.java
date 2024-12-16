@@ -30,8 +30,8 @@ public class Member extends BaseEntity {
     @Column(nullable = false, length = 50)
     public String email;
 
-    @Column(nullable = false, length = 100)
-    public String password;
+    @Column(length = 100)
+    public String password; // 비밀번호는 nullable로 설정 (소셜 로그인 시 필요 없을 수 있음)
 
     @Column(nullable = false, length = 20)
     public String name;
@@ -56,6 +56,13 @@ public class Member extends BaseEntity {
 
     @Column(name = "inactive_date")
     public LocalDateTime inactiveDate;
+
+    // 카카오 관련 필드
+    @Column(name = "kakao_id", unique = true)
+    private String kakaoId; // 카카오 계정 고유 ID
+
+    @Column(name = "profile_image_url")
+    private String profileImageUrl; // 프로필 이미지 URL
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Ootd> ootds = new ArrayList<>();

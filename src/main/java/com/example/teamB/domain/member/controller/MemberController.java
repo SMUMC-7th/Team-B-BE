@@ -256,5 +256,4 @@ public class MemberController {
         MemberResponseDTO.MemberInfoDTO myInfo = memberQueryService.getProfile(member);
         return CustomResponse.onSuccess(myInfo);
     }
-
 }

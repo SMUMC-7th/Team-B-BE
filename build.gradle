@@ -52,6 +52,11 @@ dependencies {
 	implementation platform('software.amazon.awssdk:bom:2.29.2')
 	implementation 'software.amazon.awssdk:s3'
 
+	// Kakao OAuth2
+	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+
 }
 
 tasks.named('test') {
