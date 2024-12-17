@@ -12,7 +12,10 @@ public enum UploadErrorCode implements BaseErrorCode {
 
     UPLOAD_FAILED(HttpStatus.INTERNAL_SERVER_ERROR,
             "UPLOAD001",
-            "업로드 처리 중 오류가 발생했습니다.");
+            "업로드 처리 중 오류가 발생했습니다."),
+    EXT_ERROR(HttpStatus.BAD_REQUEST,
+            "UPLOAD002",
+            "업로드 파일 확장자가 유효하지 않습니다.");
 
     private final HttpStatus status;
     private final String code;

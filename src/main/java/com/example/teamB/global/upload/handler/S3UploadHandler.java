@@ -44,6 +44,9 @@ public class S3UploadHandler implements UploadHandler {
     private String createStoreFileName(String originalFilename) {
         String ext = extractExt(originalFilename);
         String uuid = UUID.randomUUID().toString();
+        if (!ext.equals("jpg") || !ext.equals("png")) {
+            throw new UploadException(UploadErrorCode.UPLOAD_FAILED);
+        }
         return uuid + "." + ext;
     }
 
